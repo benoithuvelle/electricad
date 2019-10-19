@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/electricad/static/css/main.34de6062.chunk.css",
+    "main.js": "/electricad/static/js/main.b518d632.chunk.js",
+    "main.js.map": "/electricad/static/js/main.b518d632.chunk.js.map",
+    "runtime-main.js": "/electricad/static/js/runtime-main.2804d077.js",
+    "runtime-main.js.map": "/electricad/static/js/runtime-main.2804d077.js.map",
+    "static/js/2.b32d4dd2.chunk.js": "/electricad/static/js/2.b32d4dd2.chunk.js",
+    "static/js/2.b32d4dd2.chunk.js.map": "/electricad/static/js/2.b32d4dd2.chunk.js.map",
+    "index.html": "/electricad/index.html",
+    "precache-manifest.1d623d58c6a45fc640f3c5b0461247e0.js": "/electricad/precache-manifest.1d623d58c6a45fc640f3c5b0461247e0.js",
+    "service-worker.js": "/electricad/service-worker.js",
+    "static/css/main.34de6062.chunk.css.map": "/electricad/static/css/main.34de6062.chunk.css.map"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.2804d077.js",
+    "static/js/2.b32d4dd2.chunk.js",
+    "static/css/main.34de6062.chunk.css",
+    "static/js/main.b518d632.chunk.js"
+  ]
+}
