@@ -12,6 +12,7 @@ export default function Background(props) {
             width={props.width}
             height={props.height}
             fill='#38a0f9'
+            //fill='pink'
             onDoubleClick={
                 (e) => {
                     let room = new Room('cuisine' + Math.floor(Math.random()*100), e.clientX-50, e.clientY-50)

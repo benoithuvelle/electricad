@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { DraggableCore } from 'react-draggable'
 
 
-export default function Point(props) {
+function Point(props) {
 
-    let { point, electricad, setRoom } = props
+    let { point, electricad, setRoom, setElectricad } = props
         
     const dragStarted = (e, dnd) => {
         ////console.log(e, dnd)
@@ -17,7 +17,8 @@ export default function Point(props) {
         thisPoint.x = point.x + dnd.deltaX
         thisPoint.y = point.y + dnd.deltaY
 
-        setRoom({...room})
+        //setRoom({...room})
+        setElectricad([...electricad])
     }
     const dragEnd = (e, dnd) => {
 
@@ -75,3 +76,5 @@ export default function Point(props) {
         </DraggableCore >
     )
 }
+
+export default Point

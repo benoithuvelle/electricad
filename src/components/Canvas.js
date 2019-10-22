@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Room from './../components/Room'
 import Background from './../components/Background'
-import { data } from './../assets/data'
+import Size from './../components/Size'
 
 export default function Canvas() {
 
@@ -32,6 +32,7 @@ export default function Canvas() {
             {electricad.map((room, i) => {
                 //////console.log(room)
                 return (
+                    
                     <Room
                         key={room.id}
                         room={room}
@@ -40,7 +41,7 @@ export default function Canvas() {
                         setSelectedRoom={setSelectedRoom}
                         setElectricad={setElectricad}
                         index={i}
-                        
+
                     />
                 )
             }

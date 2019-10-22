@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react'
 import Point from './Point'
 import Floor from './Floor'
 import Segment from './Segment'
+import Size from './Size'
 import Draggable from 'react-draggable'
-import { data } from '../assets/data'
 
-export default function Room(props) {
+function Room(props) {
 
     ///////////////////////////////////////////
     /////////// props and states //////////////
@@ -38,6 +38,10 @@ export default function Room(props) {
                 setElectricad(electricad.filter(el => el.id !== room.id))
             }
         }
+    }
+
+    const dragging = (e, dnd) => {
+        e.preventDefault()
     }
 
     const dragEnded = (e, dnd) => {
@@ -92,6 +96,7 @@ export default function Room(props) {
             cancel={['.corner', '.segment']}
             disabled={!isSelected}
             onStop={dragEnded}
+            onDrag={dragging}
         >
             <g
                 className={'room'}
@@ -126,6 +131,7 @@ export default function Room(props) {
                         null
                 }
 
+
                 {
                     isSelected ?
                         room.points.map(point =>
@@ -135,10 +141,19 @@ export default function Room(props) {
                                 electricad={electricad}
                                 setRoom={setRoom}
                                 room={room}
+                                setElectricad={setElectricad}
                             />)
                         :
                         null
                 }
+                {
+                    room.path().map(path => <Size
+                        key={path.id}
+                        path={path}
+                    />)
+                }
+
+                
 
 
 
@@ -148,10 +163,12 @@ export default function Room(props) {
 }
 
 
-// , (prevProps, nextProps) => {
-//     if (prevProps.room === nextProps.room && prevProps.isSelected === nextProps.isSelected) {
-//         return true;
-//     }
-//     return false;
-// })
+export default Room
+// export default React.memo(Room,
+//     (prevProps, nextProps) => {
+//         if (prevProps.room === nextProps.room && prevProps.isSelected === nextProps.isSelected) {
+//             return true;
+//         }
+//         return false;
+//     })
 
