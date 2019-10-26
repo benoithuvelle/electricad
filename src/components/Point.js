@@ -17,8 +17,8 @@ function Point(props) {
         thisPoint.x = point.x + dnd.deltaX
         thisPoint.y = point.y + dnd.deltaY
 
-        //setRoom({...room})
-        setElectricad([...electricad])
+        setRoom({...room})
+        //setElectricad([...electricad])
     }
     const dragEnd = (e, dnd) => {
 
@@ -49,7 +49,9 @@ function Point(props) {
                     thisPoint.y = point.dy + point.y - thisPoint.dy
                 }
 
-                setRoom({...room})
+            setRoom({...room})
+                //setElectricad([...electricad])
+
 
             })
 
