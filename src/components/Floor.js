@@ -4,13 +4,15 @@ export default function Floor(props) {
 
     //console.log('floor rendering')
 
-    let { points } = props
+    let { polygon } = props
 
-    let d = points.map(point => [point.x, point.y].join(' '))
+    //console.log(polygon)
+
+    let d = polygon.map(point => [point[0], point[1]].join(' '))
 
     return (
         <polygon
-            points={d}
+            points={polygon}
             fill='#ffffaa'
             stroke='steelblue'
         />

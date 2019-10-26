@@ -1,0 +1,6 @@
+how to re-append element so that this svg is in front ? 
+
+Is that a good way to useState with array ?
+        setRooms(rooms => [...rooms.slice(0, index), room, ...rooms.slice(index + 1)])
+
+

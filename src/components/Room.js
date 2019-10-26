@@ -1,131 +1,133 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Point from './Point'
 import Floor from './Floor'
 import Segment from './Segment'
 import Size from './Size'
-import Draggable from 'react-draggable'
+import { DraggableCore } from 'react-draggable'
+import { getPolygon, getPath } from './../utils'
+import { RoomObj } from './../utils'
 
 function Room(props) {
+    //console.log(props)
+    console.log('room rendering')
 
-    ///////////////////////////////////////////
-    /////////// props and states //////////////
-    ///////////////////////////////////////////
 
-    let { electricad, setElectricad, setSelectedRoom, isSelected, index } = props
+    let { setRooms, setSelectedRoom, isSelected, roomIndex, id, coords, points } = props
 
-    let [room, setRoom] = useState(props.room)
-    useEffect(() => {
-        //console.log('room changed')
-        electricad[index] = room
-        setElectricad([...electricad])
-    }, [room])
+    const [room, setRoom] = useState(props.room)
 
-    ///////////////////////////////////////////
-    /////////// ////console.log  //////////////////
-    ///////////////////////////////////////////
-
-    //console.log('rendering room : ' + room.id)
-    ////console.log(room.path())
-
-    ///////////////////////////////////////////
-    /////////////// functions /////////////////
-    ///////////////////////////////////////////
-
+    
     const deleteRoom = e => {
         if (isSelected) {
             if (e.keyCode === 8) {
-                ////console.log('you want to delete this ?')
-                setElectricad(electricad.filter(el => el.id !== room.id))
+                setRooms(rooms => rooms.filter(el => el.id !== id))
             }
         }
     }
 
+    const updateRoom = (room, index) => {
+        //console.log(' room updating')
+        setRooms(rooms => [...rooms.slice(0, index), {...room}, ...rooms.slice(index + 1)])
+    }
+
+    // const updatePoint = (coords, pointIndex) => {
+    //     console.log(pointIndex)
+    //     const room = new RoomObj(id, x, y)
+    //     room.points = points
+    //     room.points[pointIndex] = coords
+    //     updateRoom(room, roomIndex)
+
+    // }
+
     const dragging = (e, dnd) => {
         e.preventDefault()
+        //console.log(e)
+        //console.log(dnd)
+
+        coords[0] += dnd.deltaX
+        coords[1] += dnd.deltaY
+
+
+        //const room = new RoomObj(id, x, y)
+        //room.points = points
+
+        updateRoom(room, roomIndex)
+
     }
 
-    const dragEnded = (e, dnd) => {
-        room.x = dnd.x
-        room.y = dnd.y
+    // const dragEnded = (e, dnd) => {
+    //     roomX = dnd.x
+    //     roomY = dnd.y
 
-        let allOtherPoints = electricad
-            .filter(el => el.id !== room.id)
-            .reduce((acc, curr, i) => {
-                curr.points.map(point => {
-                    point.dx = curr.x
-                    point.dy = curr.y
-                    acc.push(point)
-                })
-                return acc
-            }, [])
+    //     // let allOtherPoints = electricad
+    //     //     .filter(el => el.id !== room.id)
+    //     //     .reduce((acc, curr, i) => {
+    //     //         curr.points.map(point => {
+    //     //             point.dx = curr.x
+    //     //             point.dy = curr.y
+    //     //             acc.push(point)
+    //     //         })
+    //     //         return acc
+    //     //     }, [])
 
-        let newPoints = room.points.map(pointA => {
-            allOtherPoints.map(pointB => {
-                let a = pointA.x + room.x
-                let b = pointB.x + pointB.dx
-                let dx = Math.abs(a - b)
-                //////console.log(dx)
-                if (dx <= 30) {
-                    //////console.log('x match')
-                    pointA.x = b - room.x
-                }
-            })
-            allOtherPoints.map(pointB => {
-                let a = pointA.y + room.y
-                let b = pointB.y + pointB.dy
-                let dy = Math.abs(a - b)
-                //////console.log(dx)
-                if (dy <= 30) {
-                    //////console.log('x match')
-                    pointA.y = b - room.y
-                }
-            })
-        })
-        ////console.log(room.points)
-        setRoom({ ...room })
-    }
+    //     let newPoints = room.points.map(pointA => {
+    //         allOtherPoints.map(pointB => {
+    //             let a = pointA.x + room.x
+    //             let b = pointB.x + pointB.dx
+    //             let dx = Math.abs(a - b)
+    //             //////console.log(dx)
+    //             if (dx <= 30) {
+    //                 //////console.log('x match')
+    //                 pointA.x = b - room.x
+    //             }
+    //         })
+    //         allOtherPoints.map(pointB => {
+    //             let a = pointA.y + room.y
+    //             let b = pointB.y + pointB.dy
+    //             let dy = Math.abs(a - b)
+    //             //////console.log(dx)
+    //             if (dy <= 30) {
+    //                 //////console.log('x match')
+    //                 pointA.y = b - room.y
+    //             }
+    //         })
+    //     })
+    //     ////console.log(room.points)
+    //     setRoom({ ...room })
+    // }
 
-    ///////////////////////////////////////////
-    //////////////// return ///////////////////
-    ///////////////////////////////////////////
 
     return (
-        <Draggable
+        <DraggableCore
             handle='.room'
-            position={{ x: room.x, y: room.y }}
+            position={{ x: coords[0], y: coords[1] }}
             cancel={['.corner', '.segment']}
             disabled={!isSelected}
-            onStop={dragEnded}
+            //onStop={dragEnded}
             onDrag={dragging}
         >
             <g
                 className={'room'}
-                id={room.id}
-                transform={`translate(${room.x} ${room.y})`}
+                id={id}
+                transform={`translate(${coords[0]} ${coords[1]})`}
                 onClick={() => {
 
-                    setSelectedRoom(room.id)
+                    setSelectedRoom(id)
                 }}
                 onKeyDown={deleteRoom}
                 tabIndex={-1}
                 style={{ outline: 0 }}
             >
                 <Floor
-                    //room={room}
-                    points={room.points}
+                    polygon={getPolygon(points)}
+                //points={points}
                 />
                 {
                     isSelected ?
-                        room.path().map(path =>
+                        getPath(points).map(pathPoints =>
                             <Segment
-                                index={index}
-                                electricad={electricad}
-                                setElectricad={setElectricad}
-                                key={path.id}
-                                path={path}
-                                electricad={electricad}
-                                setRoom={setRoom}
-                                room={room}
+                                key={pathPoints}
+                                pathPoints={pathPoints}
                             />)
                         :
                         null
@@ -134,31 +136,37 @@ function Room(props) {
 
                 {
                     isSelected ?
-                        room.points.map(point =>
+                        points.map((point, index) =>
                             <Point
-                                key={point.id}
+                                key={point}
                                 point={point}
-                                electricad={electricad}
-                                setRoom={setRoom}
+                                //updatePoint={updatePoint}
+                                updateRoom={updateRoom}
+                                pointIndex={index}
+                                roomIndex={roomIndex}
                                 room={room}
-                                setElectricad={setElectricad}
+                                setRoom={setRoom}
                             />)
-                        :
-                        null
+                        : null
                 }
-                {/* {
-                    room.path().map(path => <Size
-                        key={path.id}
-                        path={path}
-                    />)
-                } */}
+                {
+                    isSelected ?
+                        getPath(points).map(pathPoints => <Size
+                            key={pathPoints}
+                            pathPoints={pathPoints}
+                        />)
+                        : null
+                }
 
-                
+
+
+
+
 
 
 
             </g>
-        </Draggable>
+        </DraggableCore>
     )
 }
 

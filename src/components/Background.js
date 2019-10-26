@@ -1,10 +1,28 @@
 import React from 'react'
-import { createRoom } from './../actions'
-import { Room } from './../actions'
+import { RoomObj } from './../utils'
 
 export default function Background(props) {
 
-    let { setElectricad, electricad, setSelectedRoom } = props
+    const { setSelectedRoom, setRooms, rooms } = props
+
+    const addRoom = e => {
+        const id = window.prompt('Dénomination de la pièce')
+
+        if (rooms.find(room => room.id === id)) {
+            alert(`Une pièce nommée ${id} existe déjà. Création annulée !!!`)
+            return
+        }
+        // const room = {
+        //     id: id,
+        //     coords: [e.clientX - 75, e.clientY - 75],
+        //     points: [[0, 0], [0, 150], [150, 150], [150, 0]]
+        // }
+
+        const room = new RoomObj(id, e.clientX - 75, e.clientY - 75)
+
+        setRooms([...rooms, room])
+        setSelectedRoom(room.id)
+    }
 
     return (
         <rect
@@ -12,14 +30,7 @@ export default function Background(props) {
             width={props.width}
             height={props.height}
             fill='#38a0f9'
-            //fill='pink'
-            onDoubleClick={
-                (e) => {
-                    let room = new Room('cuisine' + Math.floor(Math.random()*100), e.clientX-50, e.clientY-50)
-                    setElectricad([...electricad, room])
-                    setSelectedRoom(room.id)
-                }
-            }
+            onDoubleClick={addRoom}
             onClick={
                 () => setSelectedRoom(null)
             }

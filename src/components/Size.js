@@ -2,20 +2,21 @@ import React from 'react'
 
 function Size(props) {
 
-    const { path } = props
+    const { pathPoints } = props
 
-    let a = path[0]
-    let b = path[1]
+    const [ a, b ] = pathPoints
+    const [ ax, ay ] = a
+    const [ bx, by ] = b
 
-    var dx = a.x - b.x;
-    var dy = a.y - b.y;
+    var dx = ax - bx;
+    var dy = ay - by;
 
     var c = Math.floor(Math.sqrt(dx * dx + dy * dy));
 
     return (
 
         <text >
-            <textPath startOffset="45%" xlinkHref={"#" + path.id}>
+            <textPath startOffset="45%" xlinkHref={"#" + pathPoints}>
                 {c}
             </textPath>
         </text>

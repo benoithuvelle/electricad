@@ -1,59 +1,41 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { DraggableCore } from 'react-draggable'
 
 
 function Point(props) {
 
-    let { point, electricad, setRoom, setElectricad } = props
-        
+    const { updateRoom, point, pointIndex, roomIndex, room, setRoom, setPoints } = props
+
+    let x = point[0]
+    let y = point[1]
+
     const dragStarted = (e, dnd) => {
-        ////console.log(e, dnd)
+        console.log('start')
     }
+
     const dragging = (e, dnd) => {
+        console.log('dragging')
 
-        let room = electricad.find(room => room.id === point.id.split('.')[0])
-        let thisPoint = room.points.find(e => e.id === point.id)
 
-        thisPoint.x = point.x + dnd.deltaX
-        thisPoint.y = point.y + dnd.deltaY
+        x += dnd.deltaX
+        y += dnd.deltaY
 
-        setRoom({...room})
-        //setElectricad([...electricad])
+        let coords = [x, y]
+
+        //e.target.setAttribute('transform', `translate(${x} ${y})`)
+
+        room.points[pointIndex] = coords
+
+        //updateRoom(room, roomIndex)
+        setRoom({...room, points : room.points} )
     }
-    const dragEnd = (e, dnd) => {
 
-        let room = electricad.find(room => room.id === point.id.split('.')[0])
-
-        let thisPoint = room.points.find(e => e.id === point.id)
-
-
-        let allPoints = electricad.reduce((acc, curr, i) => {
-            curr.points.map(point => {
-                point.dx = curr.x
-                point.dy = curr.y
-                acc.push(point)
-            })
-            return acc
-        }, [])
-
-
-
-        allPoints
-            .filter(e => e.id !== point.id)
-            .map(point => {
-
-                if (Math.abs((point.x + point.dx) - (thisPoint.x + thisPoint.dx)) <= 16) {
-                    thisPoint.x = point.dx + point.x - thisPoint.dx
-                }
-                if (Math.abs((point.y + point.dy) - (thisPoint.y + thisPoint.dy)) <= 16) {
-                    thisPoint.y = point.dy + point.y - thisPoint.dy
-                }
-
-                setRoom({...room})
-
-            })
+    const dragEnd = () => {
+        console.log('stop')
+        //updateRoom(room, roomIndex)
 
     }
+
 
     return (
         <DraggableCore
@@ -63,27 +45,26 @@ function Point(props) {
             onStop={dragEnd}
         >
             <g>
-            <circle
-                className='corner'
-                id={point.id}
-                cx={point.x}
-                cy={point.y}
-                r={16}
-                fill={"white"}
-                stroke={"#38a0f9"}
-                strokeWidth={4}
-                //opacity={0.6}
-            />
-            <text
-                x={point.x}
-                y={point.y}
-                textAnchor="middle"
-                alignmentBaseline='central'
-                pointerEvents='none'
-                fill='grey'
-            >
-                {point.id.split('.')[2]}
-            </text>
+                <circle
+                    className='corner'
+                    //id={point.id}
+                    cx={x}
+                    cy={y}
+                    r={16}
+                    fill={"white"}
+                    stroke={"#38a0f9"}
+                    strokeWidth={4}
+                />
+                <text
+                    x={x}
+                    y={y}
+                    textAnchor="middle"
+                    alignmentBaseline='central'
+                    pointerEvents='none'
+                    fill='grey'
+                >
+                    {2}
+                </text>
 
             </g>
         </DraggableCore >

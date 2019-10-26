@@ -5,130 +5,139 @@ import { DraggableCore } from 'react-draggable'
 
 
 export default function Segment(props) {
-    let { room, path, setElectricad, electricad, index } = props
 
-    let pointA = room.points.find(e => e.id === path[0].id)
-    let pointB = room.points.find(e => e.id === path[1].id)
+    const [ a, b ] = props.pathPoints
 
-    //////console.log(path.length)
+    const [ax, ay] = a
+    const [bx, by] = b
 
-    let segment = line()
-        .x(d => d.x)
-        .y(d => d.y)
+    let path = line()
+        .x(d => d[0])
+        .y(d => d[1])
 
-    const dragging = (e, dnd) => {
-        pointA.x = pointA.x + dnd.deltaX
-        pointB.x = pointB.x + dnd.deltaX
-        pointA.y = pointA.y + dnd.deltaY
-        pointB.y = pointB.y + dnd.deltaY
-        setElectricad([...electricad])
-    }
 
-    const dragEnd = (e, dnd) => {
 
-        let allPoints = electricad.reduce((acc, curr, i) => {
-            curr.points.map(point => {
-                point.dx = curr.x
-                point.dy = curr.y
-                acc.push(point)
-            })
-            return acc
-        }, [])
+    // let pointA = room.points.find(e => e.id === path[0].id)
+    // let pointB = room.points.find(e => e.id === path[1].id)
 
-        let allOtherPoints = allPoints.filter(point => point.id !== pointA.id && point.id !== pointB.id)
+    // //////console.log(path.length)
 
-        allOtherPoints.map(point => {
+    // let segment = line()
+    //     .x(d => d.x)
+    //     .y(d => d.y)
 
-            if (Math.abs((point.x + point.dx) - (pointA.x + pointA.dx)) <= 16) {
-                pointA.x = point.dx + point.x - pointA.dx
-            }
-            if (Math.abs((point.y + point.dy) - (pointA.y + pointA.dy)) <= 16) {
-                pointA.y = point.dy + point.y - pointA.dy
-            }
-            if (Math.abs((point.x + point.dx) - (pointB.x + pointB.dx)) <= 16) {
-                pointB.x = point.dx + point.x - pointB.dx
-            }
-            if (Math.abs((point.y + point.dy) - (pointB.y + pointB.dy)) <= 16) {
-                pointB.y = point.dy + point.y - pointB.dy
-            }
-            setElectricad([...electricad])
-        })
-    }
+    // const dragging = (e, dnd) => {
+    //     pointA.x = pointA.x + dnd.deltaX
+    //     pointB.x = pointB.x + dnd.deltaX
+    //     pointA.y = pointA.y + dnd.deltaY
+    //     pointB.y = pointB.y + dnd.deltaY
+    //     setElectricad([...electricad])
+    // }
 
-    const addPoint = (e) => {
-        e.persist()
-        ////console.log(e.target.getBoundingClientRect())
-        ////console.log(e.clientX)
-        //console.log(e.target)
+    // const dragEnd = (e, dnd) => {
 
-        let box = e.target.getBoundingClientRect()
-        //console.log(box.left)
-        //console.log(e.clientX)
-        let pointer = { x: e.clientX, y: e.clientY }
+    //     let allPoints = electricad.reduce((acc, curr, i) => {
+    //         curr.points.map(point => {
+    //             point.dx = curr.x
+    //             point.dy = curr.y
+    //             acc.push(point)
+    //         })
+    //         return acc
+    //     }, [])
 
-        let point = {}
+    //     let allOtherPoints = allPoints.filter(point => point.id !== pointA.id && point.id !== pointB.id)
 
-        point.x = pointer.x - box.left + path[0].x < path[1].x ? path[0].x : path[1].x
-        point.x = path[0].x < path[1].x ? pointer.x - box.left + path[0].x : pointer.x - box.left + path[1].x
-        //console.log(point.x)
-        // y = mx + b
+    //     allOtherPoints.map(point => {
 
-        let a = path[0]
-        let b = path[1]
+    //         if (Math.abs((point.x + point.dx) - (pointA.x + pointA.dx)) <= 16) {
+    //             pointA.x = point.dx + point.x - pointA.dx
+    //         }
+    //         if (Math.abs((point.y + point.dy) - (pointA.y + pointA.dy)) <= 16) {
+    //             pointA.y = point.dy + point.y - pointA.dy
+    //         }
+    //         if (Math.abs((point.x + point.dx) - (pointB.x + pointB.dx)) <= 16) {
+    //             pointB.x = point.dx + point.x - pointB.dx
+    //         }
+    //         if (Math.abs((point.y + point.dy) - (pointB.y + pointB.dy)) <= 16) {
+    //             pointB.y = point.dy + point.y - pointB.dy
+    //         }
+    //         setElectricad([...electricad])
+    //     })
+    // }
 
-        console.log(a.id.split('.')[2],b.id.split('.')[2])
+    // const addPoint = (e) => {
+    //     e.persist()
+    //     ////console.log(e.target.getBoundingClientRect())
+    //     ////console.log(e.clientX)
+    //     //console.log(e.target)
 
-        let dx = a.x - b.x
-        let dy = a.y - b.y
+    //     let box = e.target.getBoundingClientRect()
+    //     //console.log(box.left)
+    //     //console.log(e.clientX)
+    //     let pointer = { x: e.clientX, y: e.clientY }
 
-        let m =  dy / dx
-        let p = a.x - m * a.y
+    //     let point = {}
 
-        ////console.log(m)
+    //     point.x = pointer.x - box.left + path[0].x < path[1].x ? path[0].x : path[1].x
+    //     point.x = path[0].x < path[1].x ? pointer.x - box.left + path[0].x : pointer.x - box.left + path[1].x
+    //     //console.log(point.x)
+    //     // y = mx + b
 
-        if (m === 0) {
-            ////console.log('ligne horizontale')
-            point.y = a.y
-        }
+    //     let a = path[0]
+    //     let b = path[1]
 
-        else if (m === Infinity || m === -Infinity) {
-            ////console.log('ligne verticale')
-            point.x = a.x
-            point.y = a.y < b.y ? Math.abs(pointer.y - box.top + a.y) : Math.abs(pointer.y - box.top + b.y) 
-        }
+    //     console.log(a.id.split('.')[2],b.id.split('.')[2])
 
-        else {
-            point.y = m * point.x + p + a.y
-        }
+    //     let dx = a.x - b.x
+    //     let dy = a.y - b.y
 
-        point.id = room.id +'.corner.' + room.points.length +1
+    //     let m =  dy / dx
+    //     let p = a.x - m * a.y
 
-        //room.points.push(point)
-        let index1 = room.points.findIndex(point => point.id === a.id) 
-        let index2 = room.points.findIndex(point => point.id === b.id) 
-        //console.log(index1, index2)
+    //     ////console.log(m)
+
+    //     if (m === 0) {
+    //         ////console.log('ligne horizontale')
+    //         point.y = a.y
+    //     }
+
+    //     else if (m === Infinity || m === -Infinity) {
+    //         ////console.log('ligne verticale')
+    //         point.x = a.x
+    //         point.y = a.y < b.y ? Math.abs(pointer.y - box.top + a.y) : Math.abs(pointer.y - box.top + b.y) 
+    //     }
+
+    //     else {
+    //          point.y = m * point.x + p + (a.x)
+    //         //point.y = m * point.x + p 
+    //     }
+
+    //     point.id = room.id +'.corner.' + room.points.length +1
+
+    //     let index1 = room.points.findIndex(point => point.id === a.id) 
+    //     let index2 = room.points.findIndex(point => point.id === b.id) 
         
-        room.points.splice(index1 + 1 , 0, point)
+    //     room.points.splice(index1 + 1 , 0, point)
 
-        setElectricad([...electricad])
+    //     setElectricad([...electricad])
       
-    }
+    // }
 
     return (
         <DraggableCore
             handle='.segment'
             // onStart={dragStarted}
-            onDrag={dragging}
-            onStop={dragEnd}
+            //onDrag={dragging}
+            //onStop={dragEnd}
         >
             <path
-                d={segment(path)}
-                id={path.id}
+                d={path(props.pathPoints)}
+                id={props.pathPoints}
                 className='segment'
                 strokeWidth={20}
                 stroke='#77cfff'
                 opacity={.8}
-                onDoubleClick={addPoint}
+                //onDoubleClick={addPoint}
 
             />
 

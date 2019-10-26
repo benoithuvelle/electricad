@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Canvas from './components/Canvas'
+import Plan from './components/Plan'
 import './App.css'
 
 
@@ -9,7 +9,7 @@ function App() {
   
   return (
     <div className="App" style={{overscrollBehavior : 'none'}}>
-      <Canvas
+      <Plan
       />
     </div>
   );
