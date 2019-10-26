@@ -1,9 +1,9 @@
+import {line} from "d3-shape";
 import React from "react";
-import { line } from "d3-shape";
-import { DraggableCore } from "react-draggable";
+import {DraggableCore} from "react-draggable";
 
-export default function Segment(props) {
-    const [a, b] = props.pathPoints;
+export default function Segment({ pathPoints, visible }) {
+    const [a, b] = pathPoints;
 
     const [ax, ay] = a;
     const [bx, by] = b;
@@ -118,6 +118,10 @@ export default function Segment(props) {
 
     // }
 
+    if (!visible) {
+        return null;
+    }
+
     return (
         <DraggableCore
             handle=".segment"
@@ -126,8 +130,8 @@ export default function Segment(props) {
             //onStop={dragEnd}
         >
             <path
-                d={path(props.pathPoints)}
-                id={props.pathPoints}
+                d={path(pathPoints)}
+                id={pathPoints}
                 className="segment"
                 strokeWidth={20}
                 stroke="#77cfff"

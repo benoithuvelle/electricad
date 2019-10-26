@@ -1,9 +1,12 @@
 import React from "react";
-import { RoomObj } from "./../utils";
 
-export default function Background(props) {
-    const { setSelectedRoom, setRooms, rooms } = props;
-
+export default function Background({
+    setSelectedRoom,
+    setRooms,
+    rooms,
+    width,
+    height
+}) {
     const addRoom = e => {
         const id = window.prompt("Dénomination de la pièce");
 
@@ -26,8 +29,8 @@ export default function Background(props) {
     return (
         <rect
             id="background"
-            width={props.width}
-            height={props.height}
+            width={width}
+            height={height}
             fill="#38a0f9"
             onDoubleClick={addRoom}
             onClick={() => setSelectedRoom(null)}

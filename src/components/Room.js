@@ -1,25 +1,23 @@
-import React, { useState } from "react";
-import { DraggableCore } from "react-draggable";
-import { getPath, getPolygon } from "./../utils";
+import React, {useState} from "react";
+import {DraggableCore} from "react-draggable";
+import {getPath, getPolygon} from "./../utils";
 import Floor from "./Floor";
 import Point from "./Point";
 import Segment from "./Segment";
 import Size from "./Size";
 
-function Room(props) {
-    //console.log(props)
+function Room({
+    setRooms,
+    setSelectedRoom,
+    isSelected,
+    roomIndex,
+    id,
+    coords,
+    room: defaultRoom
+}) {
     console.log("room rendering");
 
-    const {
-        setRooms,
-        setSelectedRoom,
-        isSelected,
-        roomIndex,
-        id,
-        coords
-    } = props;
-
-    const [room, setRoom] = useState(props.room);
+    const [room, setRoom] = useState(defaultRoom);
 
     const [points, setPoints] = useState([
         [0, 0],
@@ -133,33 +131,32 @@ function Room(props) {
                     polygon={getPolygon(points)}
                     //points={points}
                 />
-                {isSelected
-                    ? getPath(points).map(pathPoints => (
-                          <Segment key={pathPoints} pathPoints={pathPoints} />
-                      ))
-                    : null}
 
-                {isSelected
-                    ? points.map((point, index) => (
-                          <Point
-                              key={point}
-                              point={point}
-                              //updatePoint={updatePoint}
-                              updateRoom={updateRoom}
-                              pointIndex={index}
-                              roomIndex={roomIndex}
-                              room={room}
-                              points={points}
-                              setRoom={setRoom}
-                              setPoints={setPoints}
-                          />
-                      ))
-                    : null}
-                {isSelected
-                    ? getPath(points).map(pathPoints => (
-                          <Size key={pathPoints} pathPoints={pathPoints} />
-                      ))
-                    : null}
+                {getPath(points).map(pathPoints => (
+                    <Segment
+                        key={pathPoints}
+                        pathPoints={pathPoints}
+                        visible={isSelected}
+                    />
+                ))}
+
+                {points.map((point, index) => (
+                    <Point
+                        key={index}
+                        point={point}
+                        index={index}
+                        points={points}
+                        setPoints={setPoints}
+                        visible={isSelected}
+                    />
+                ))}
+                {getPath(points).map(pathPoints => (
+                    <Size
+                        key={pathPoints}
+                        pathPoints={pathPoints}
+                        visible={isSelected}
+                    />
+                ))}
             </g>
         </DraggableCore>
     );

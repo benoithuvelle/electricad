@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from "react";
-import Room from "./Room";
+import React, {useState} from "react";
 import Background from "./Background";
-import Size from "./Size";
+import Room from "./Room";
 
 export default function Plan() {
     const [rooms, setRooms] = useState([]);
     const [selectedRoom, setSelectedRoom] = useState(null);
 
-    let width = window.innerWidth;
-    let height = window.innerHeight;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-    useEffect(() => {
-        console.log("plan mounted or updated");
-        return () => {
-            console.log("plan will unmount");
-        };
-    });
+    // Array.from(document.getElementsByTagName("circle")).map((e) => { return e.getBoundingClientRect()  })
 
     return (
         <svg width={width} height={height}>
@@ -33,7 +27,6 @@ export default function Plan() {
                         key={room.id}
                         roomIndex={i}
                         id={room.id}
-                        //points={room.points}
                         coords={room.coords}
                         isSelected={selectedRoom === room.id ? true : false}
                         setSelectedRoom={setSelectedRoom}

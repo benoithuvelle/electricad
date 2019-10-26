@@ -1,20 +1,13 @@
 import React from "react";
-import { DraggableCore } from "react-draggable";
+import {DraggableCore} from "react-draggable";
 
-function Point(props) {
-    const {
-        updateRoom,
-        points,
-        point,
-        pointIndex,
-        roomIndex,
-        room,
-        setRoom,
-        setPoints
-    } = props;
+function Point({ point, index, points, setPoints, visible }) {
+    if (!visible) {
+        return null;
+    }
 
-    let x = point[0];
-    let y = point[1];
+    const x = point[0];
+    const y = point[1];
 
     const dragStarted = (e, dnd) => {
         console.log("start");
@@ -22,25 +15,15 @@ function Point(props) {
 
     const dragging = (e, dnd) => {
         console.log("dragging");
-
-        x += dnd.deltaX;
-        y += dnd.deltaY;
-
-        let coords = [x, y];
-
         //e.target.setAttribute('transform', `translate(${x} ${y})`)
+
         const newPoints = [...points];
-
-        newPoints[pointIndex] = coords;
-
-        //setRoom({...room, points : room.points} )
+        newPoints[index] = [x + dnd.deltaX, y + dnd.deltaY];
         setPoints(newPoints);
-        //updateRoom(room, roomIndex)
     };
 
     const dragEnd = () => {
         console.log("stop");
-        //updateRoom(room, roomIndex)
     };
 
     return (
