@@ -12,9 +12,11 @@ function Room(props) {
     console.log('room rendering')
 
 
-    let { setRooms, setSelectedRoom, isSelected, roomIndex, id, coords, points } = props
+    const { setRooms, setSelectedRoom, isSelected, roomIndex, id, coords } = props
 
     const [room, setRoom] = useState(props.room)
+
+    const [points, setPoints] = useState([[0, 0], [0, 150], [150, 150], [150, 0]])
 
     
     const deleteRoom = e => {
@@ -51,6 +53,7 @@ function Room(props) {
         //const room = new RoomObj(id, x, y)
         //room.points = points
 
+        
         updateRoom(room, roomIndex)
 
     }
@@ -145,7 +148,9 @@ function Room(props) {
                                 pointIndex={index}
                                 roomIndex={roomIndex}
                                 room={room}
+                                points={points}
                                 setRoom={setRoom}
+                                setPoints={setPoints}
                             />)
                         : null
                 }

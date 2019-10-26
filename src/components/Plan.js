@@ -38,7 +38,7 @@ export default function Plan() {
                         key={room.id}
                         roomIndex={i}
                         id={room.id}
-                        points={room.points}
+                        //points={room.points}
                         coords={room.coords}
                         isSelected={selectedRoom === room.id ? true : false}
                         setSelectedRoom={setSelectedRoom}

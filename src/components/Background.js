@@ -12,13 +12,13 @@ export default function Background(props) {
             alert(`Une pièce nommée ${id} existe déjà. Création annulée !!!`)
             return
         }
-        // const room = {
-        //     id: id,
-        //     coords: [e.clientX - 75, e.clientY - 75],
-        //     points: [[0, 0], [0, 150], [150, 150], [150, 0]]
-        // }
+        const room = {
+            id: id,
+            coords: [e.clientX - 75, e.clientY - 75],
+            //points: [[0, 0], [0, 150], [150, 150], [150, 0]]
+        }
 
-        const room = new RoomObj(id, e.clientX - 75, e.clientY - 75)
+        //const room = new RoomObj(id, e.clientX - 75, e.clientY - 75)
 
         setRooms([...rooms, room])
         setSelectedRoom(room.id)

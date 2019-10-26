@@ -4,7 +4,7 @@ import { DraggableCore } from 'react-draggable'
 
 function Point(props) {
 
-    const { updateRoom, point, pointIndex, roomIndex, room, setRoom, setPoints } = props
+    const { updateRoom, points, point, pointIndex, roomIndex, room, setRoom, setPoints } = props
 
     let x = point[0]
     let y = point[1]
@@ -23,13 +23,15 @@ function Point(props) {
         let coords = [x, y]
 
         //e.target.setAttribute('transform', `translate(${x} ${y})`)
+        const newPoints = [...points]
+        
+        newPoints[pointIndex] = coords
 
-        room.points[pointIndex] = coords
-
+        //setRoom({...room, points : room.points} )
+        setPoints(newPoints)
         //updateRoom(room, roomIndex)
-        setRoom({...room, points : room.points} )
     }
-
+    
     const dragEnd = () => {
         console.log('stop')
         //updateRoom(room, roomIndex)
