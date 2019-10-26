@@ -1,28 +1,24 @@
-import React, { useState, useEffect } from 'react'
-import Room from './Room'
-import Background from './Background'
-import Size from './Size'
+import React, { useState, useEffect } from "react";
+import Room from "./Room";
+import Background from "./Background";
+import Size from "./Size";
 
 export default function Plan() {
+    const [rooms, setRooms] = useState([]);
+    const [selectedRoom, setSelectedRoom] = useState(null);
 
-    const [rooms, setRooms] = useState([])
-    const [selectedRoom, setSelectedRoom] = useState(null)
-
-    let width = window.innerWidth
-    let height = window.innerHeight
+    let width = window.innerWidth;
+    let height = window.innerHeight;
 
     useEffect(() => {
-        console.log('plan mounted or updated')
+        console.log("plan mounted or updated");
         return () => {
-            console.log('plan will unmount')
+            console.log("plan will unmount");
         };
-    })
+    });
 
     return (
-        <svg
-            width={width}
-            height={height}
-        >
+        <svg width={width} height={height}>
             <Background
                 width={width}
                 height={height}
@@ -33,7 +29,6 @@ export default function Plan() {
 
             {rooms.map((room, i) => {
                 return (
-
                     <Room
                         key={room.id}
                         roomIndex={i}
@@ -46,10 +41,8 @@ export default function Plan() {
                         setRooms={setRooms}
                         room={room}
                     />
-                )
-            }
-            )}
-
+                );
+            })}
         </svg>
-    )
+    );
 }

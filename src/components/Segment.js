@@ -1,21 +1,16 @@
-import React from 'react'
-import { line } from 'd3-shape'
-import { DraggableCore } from 'react-draggable'
-
-
+import React from "react";
+import { line } from "d3-shape";
+import { DraggableCore } from "react-draggable";
 
 export default function Segment(props) {
+    const [a, b] = props.pathPoints;
 
-    const [ a, b ] = props.pathPoints
-
-    const [ax, ay] = a
-    const [bx, by] = b
+    const [ax, ay] = a;
+    const [bx, by] = b;
 
     let path = line()
         .x(d => d[0])
-        .y(d => d[1])
-
-
+        .y(d => d[1]);
 
     // let pointA = room.points.find(e => e.id === path[0].id)
     // let pointB = room.points.find(e => e.id === path[1].id)
@@ -104,28 +99,28 @@ export default function Segment(props) {
     //     else if (m === Infinity || m === -Infinity) {
     //         ////console.log('ligne verticale')
     //         point.x = a.x
-    //         point.y = a.y < b.y ? Math.abs(pointer.y - box.top + a.y) : Math.abs(pointer.y - box.top + b.y) 
+    //         point.y = a.y < b.y ? Math.abs(pointer.y - box.top + a.y) : Math.abs(pointer.y - box.top + b.y)
     //     }
 
     //     else {
     //          point.y = m * point.x + p + (a.x)
-    //         //point.y = m * point.x + p 
+    //         //point.y = m * point.x + p
     //     }
 
     //     point.id = room.id +'.corner.' + room.points.length +1
 
-    //     let index1 = room.points.findIndex(point => point.id === a.id) 
-    //     let index2 = room.points.findIndex(point => point.id === b.id) 
-        
+    //     let index1 = room.points.findIndex(point => point.id === a.id)
+    //     let index2 = room.points.findIndex(point => point.id === b.id)
+
     //     room.points.splice(index1 + 1 , 0, point)
 
     //     setElectricad([...electricad])
-      
+
     // }
 
     return (
         <DraggableCore
-            handle='.segment'
+            handle=".segment"
             // onStart={dragStarted}
             //onDrag={dragging}
             //onStop={dragEnd}
@@ -133,14 +128,12 @@ export default function Segment(props) {
             <path
                 d={path(props.pathPoints)}
                 id={props.pathPoints}
-                className='segment'
+                className="segment"
                 strokeWidth={20}
-                stroke='#77cfff'
-                opacity={.8}
+                stroke="#77cfff"
+                opacity={0.8}
                 //onDoubleClick={addPoint}
-
             />
-
         </DraggableCore>
-    )
+    );
 }

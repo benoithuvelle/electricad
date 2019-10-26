@@ -1,54 +1,58 @@
-import React from 'react'
-import { DraggableCore } from 'react-draggable'
-
+import React from "react";
+import { DraggableCore } from "react-draggable";
 
 function Point(props) {
+    const {
+        updateRoom,
+        points,
+        point,
+        pointIndex,
+        roomIndex,
+        room,
+        setRoom,
+        setPoints
+    } = props;
 
-    const { updateRoom, points, point, pointIndex, roomIndex, room, setRoom, setPoints } = props
-
-    let x = point[0]
-    let y = point[1]
+    let x = point[0];
+    let y = point[1];
 
     const dragStarted = (e, dnd) => {
-        console.log('start')
-    }
+        console.log("start");
+    };
 
     const dragging = (e, dnd) => {
-        console.log('dragging')
+        console.log("dragging");
 
+        x += dnd.deltaX;
+        y += dnd.deltaY;
 
-        x += dnd.deltaX
-        y += dnd.deltaY
-
-        let coords = [x, y]
+        let coords = [x, y];
 
         //e.target.setAttribute('transform', `translate(${x} ${y})`)
-        const newPoints = [...points]
-        
-        newPoints[pointIndex] = coords
+        const newPoints = [...points];
+
+        newPoints[pointIndex] = coords;
 
         //setRoom({...room, points : room.points} )
-        setPoints(newPoints)
+        setPoints(newPoints);
         //updateRoom(room, roomIndex)
-    }
-    
+    };
+
     const dragEnd = () => {
-        console.log('stop')
+        console.log("stop");
         //updateRoom(room, roomIndex)
-
-    }
-
+    };
 
     return (
         <DraggableCore
-            handle='.corner'
+            handle=".corner"
             onStart={dragStarted}
             onDrag={dragging}
             onStop={dragEnd}
         >
             <g>
                 <circle
-                    className='corner'
+                    className="corner"
                     //id={point.id}
                     cx={x}
                     cy={y}
@@ -61,16 +65,15 @@ function Point(props) {
                     x={x}
                     y={y}
                     textAnchor="middle"
-                    alignmentBaseline='central'
-                    pointerEvents='none'
-                    fill='grey'
+                    alignmentBaseline="central"
+                    pointerEvents="none"
+                    fill="grey"
                 >
                     {2}
                 </text>
-
             </g>
-        </DraggableCore >
-    )
+        </DraggableCore>
+    );
 }
 
-export default Point
+export default Point;

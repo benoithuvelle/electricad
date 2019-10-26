@@ -1,36 +1,49 @@
-import React, { useState } from 'react'
-import Point from './Point'
-import Floor from './Floor'
-import Segment from './Segment'
-import Size from './Size'
-import { DraggableCore } from 'react-draggable'
-import { getPolygon, getPath } from './../utils'
-import { RoomObj } from './../utils'
+import React, { useState } from "react";
+import { DraggableCore } from "react-draggable";
+import { getPath, getPolygon } from "./../utils";
+import Floor from "./Floor";
+import Point from "./Point";
+import Segment from "./Segment";
+import Size from "./Size";
 
 function Room(props) {
     //console.log(props)
-    console.log('room rendering')
+    console.log("room rendering");
 
+    const {
+        setRooms,
+        setSelectedRoom,
+        isSelected,
+        roomIndex,
+        id,
+        coords
+    } = props;
 
-    const { setRooms, setSelectedRoom, isSelected, roomIndex, id, coords } = props
+    const [room, setRoom] = useState(props.room);
 
-    const [room, setRoom] = useState(props.room)
+    const [points, setPoints] = useState([
+        [0, 0],
+        [0, 150],
+        [150, 150],
+        [150, 0]
+    ]);
 
-    const [points, setPoints] = useState([[0, 0], [0, 150], [150, 150], [150, 0]])
-
-    
     const deleteRoom = e => {
         if (isSelected) {
             if (e.keyCode === 8) {
-                setRooms(rooms => rooms.filter(el => el.id !== id))
+                setRooms(rooms => rooms.filter(el => el.id !== id));
             }
         }
-    }
+    };
 
     const updateRoom = (room, index) => {
         //console.log(' room updating')
-        setRooms(rooms => [...rooms.slice(0, index), {...room}, ...rooms.slice(index + 1)])
-    }
+        setRooms(rooms => [
+            ...rooms.slice(0, index),
+            { ...room },
+            ...rooms.slice(index + 1)
+        ]);
+    };
 
     // const updatePoint = (coords, pointIndex) => {
     //     console.log(pointIndex)
@@ -42,21 +55,18 @@ function Room(props) {
     // }
 
     const dragging = (e, dnd) => {
-        e.preventDefault()
+        e.preventDefault();
         //console.log(e)
         //console.log(dnd)
 
-        coords[0] += dnd.deltaX
-        coords[1] += dnd.deltaY
-
+        coords[0] += dnd.deltaX;
+        coords[1] += dnd.deltaY;
 
         //const room = new RoomObj(id, x, y)
         //room.points = points
 
-        
-        updateRoom(room, roomIndex)
-
-    }
+        updateRoom(room, roomIndex);
+    };
 
     // const dragEnded = (e, dnd) => {
     //     roomX = dnd.x
@@ -99,23 +109,21 @@ function Room(props) {
     //     setRoom({ ...room })
     // }
 
-
     return (
         <DraggableCore
-            handle='.room'
+            handle=".room"
             position={{ x: coords[0], y: coords[1] }}
-            cancel={['.corner', '.segment']}
+            cancel={[".corner", ".segment"]}
             disabled={!isSelected}
             //onStop={dragEnded}
             onDrag={dragging}
         >
             <g
-                className={'room'}
+                className={"room"}
                 id={id}
                 transform={`translate(${coords[0]} ${coords[1]})`}
                 onClick={() => {
-
-                    setSelectedRoom(id)
+                    setSelectedRoom(id);
                 }}
                 onKeyDown={deleteRoom}
                 tabIndex={-1}
@@ -123,60 +131,41 @@ function Room(props) {
             >
                 <Floor
                     polygon={getPolygon(points)}
-                //points={points}
+                    //points={points}
                 />
-                {
-                    isSelected ?
-                        getPath(points).map(pathPoints =>
-                            <Segment
-                                key={pathPoints}
-                                pathPoints={pathPoints}
-                            />)
-                        :
-                        null
-                }
+                {isSelected
+                    ? getPath(points).map(pathPoints => (
+                          <Segment key={pathPoints} pathPoints={pathPoints} />
+                      ))
+                    : null}
 
-
-                {
-                    isSelected ?
-                        points.map((point, index) =>
-                            <Point
-                                key={point}
-                                point={point}
-                                //updatePoint={updatePoint}
-                                updateRoom={updateRoom}
-                                pointIndex={index}
-                                roomIndex={roomIndex}
-                                room={room}
-                                points={points}
-                                setRoom={setRoom}
-                                setPoints={setPoints}
-                            />)
-                        : null
-                }
-                {
-                    isSelected ?
-                        getPath(points).map(pathPoints => <Size
-                            key={pathPoints}
-                            pathPoints={pathPoints}
-                        />)
-                        : null
-                }
-
-
-
-
-
-
-
-
+                {isSelected
+                    ? points.map((point, index) => (
+                          <Point
+                              key={point}
+                              point={point}
+                              //updatePoint={updatePoint}
+                              updateRoom={updateRoom}
+                              pointIndex={index}
+                              roomIndex={roomIndex}
+                              room={room}
+                              points={points}
+                              setRoom={setRoom}
+                              setPoints={setPoints}
+                          />
+                      ))
+                    : null}
+                {isSelected
+                    ? getPath(points).map(pathPoints => (
+                          <Size key={pathPoints} pathPoints={pathPoints} />
+                      ))
+                    : null}
             </g>
         </DraggableCore>
-    )
+    );
 }
 
-
-export default Room
+export default Room;
 // export default React.memo(Room,
 //     (prevProps, nextProps) => {
 //         if (prevProps.room === nextProps.room && prevProps.isSelected === nextProps.isSelected) {
@@ -184,4 +173,3 @@ export default Room
 //         }
 //         return false;
 //     })
-
