@@ -1,7 +1,20 @@
 import React from "react";
-import {DraggableCore} from "react-draggable";
+import {DraggableCore, DraggableData} from "react-draggable";
+import {Points, XY} from "../interfaces";
 
-function Point({ point, index, points, setPoints, visible }) {
+function Point({
+    point,
+    index,
+    points,
+    setPoints,
+    visible,
+}: {
+    point: XY;
+    index: number;
+    points: Points;
+    setPoints: any;
+    visible: boolean;
+}) {
     if (!visible) {
         return null;
     }
@@ -9,11 +22,11 @@ function Point({ point, index, points, setPoints, visible }) {
     const x = point[0];
     const y = point[1];
 
-    const dragStarted = (e, dnd) => {
+    const dragStarted = () => {
         console.log("start");
     };
 
-    const dragging = (e, dnd) => {
+    const dragging = (e: any, dnd: DraggableData) => {
         console.log("dragging");
         //e.target.setAttribute('transform', `translate(${x} ${y})`)
 

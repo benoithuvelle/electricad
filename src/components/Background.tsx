@@ -5,18 +5,24 @@ export default function Background({
     setRooms,
     rooms,
     width,
-    height
+    height,
+}: {
+    setSelectedRoom: any;
+    setRooms: any;
+    rooms: any;
+    width: number;
+    height: number;
 }) {
-    const addRoom = e => {
+    const addRoom = (e: any) => {
         const id = window.prompt("Dénomination de la pièce");
 
-        if (rooms.find(room => room.id === id)) {
+        if (rooms.find((room) => room.id === id)) {
             alert(`Une pièce nommée ${id} existe déjà. Création annulée !!!`);
             return;
         }
         const room = {
             id: id,
-            coords: [e.clientX - 75, e.clientY - 75]
+            coords: [e.clientX - 75, e.clientY - 75],
             //points: [[0, 0], [0, 150], [150, 150], [150, 0]]
         };
 

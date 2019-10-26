@@ -1,6 +1,6 @@
 import React from "react";
 
-function Size({ pathPoints, visible }) {
+function Size({pathPoints, visible}) {
     const [a, b] = pathPoints;
     const [ax, ay] = a;
     const [bx, by] = b;

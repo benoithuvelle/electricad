@@ -1,5 +1,6 @@
 import React, {useState} from "react";
-import {DraggableCore} from "react-draggable";
+import {DraggableCore, DraggableData} from "react-draggable";
+import {Points} from "../interfaces";
 import {getPath, getPolygon} from "./../utils";
 import Floor from "./Floor";
 import Point from "./Point";
@@ -13,33 +14,41 @@ function Room({
     roomIndex,
     id,
     coords,
-    room: defaultRoom
+    room: defaultRoom,
+}: {
+    setRooms: any;
+    setSelectedRoom: any;
+    isSelected: boolean;
+    roomIndex: number;
+    id: string;
+    coords: any;
+    room: any;
 }) {
     console.log("room rendering");
 
     const [room, setRoom] = useState(defaultRoom);
 
-    const [points, setPoints] = useState([
+    const [points, setPoints] = useState<Points>([
         [0, 0],
         [0, 150],
         [150, 150],
-        [150, 0]
+        [150, 0],
     ]);
 
-    const deleteRoom = e => {
+    const deleteRoom = (e: any) => {
         if (isSelected) {
             if (e.keyCode === 8) {
-                setRooms(rooms => rooms.filter(el => el.id !== id));
+                setRooms((rooms: any) => rooms.filter((el: any) => el.id !== id));
             }
         }
     };
 
-    const updateRoom = (room, index) => {
+    const updateRoom = (room: any, index: number) => {
         //console.log(' room updating')
-        setRooms(rooms => [
+        setRooms((rooms: any) => [
             ...rooms.slice(0, index),
-            { ...room },
-            ...rooms.slice(index + 1)
+            {...room},
+            ...rooms.slice(index + 1),
         ]);
     };
 
@@ -52,7 +61,7 @@ function Room({
 
     // }
 
-    const dragging = (e, dnd) => {
+    const dragging = (e: any, dnd: DraggableData) => {
         e.preventDefault();
         //console.log(e)
         //console.log(dnd)
@@ -110,7 +119,7 @@ function Room({
     return (
         <DraggableCore
             handle=".room"
-            position={{ x: coords[0], y: coords[1] }}
+            position={{x: coords[0], y: coords[1]}}
             cancel={[".corner", ".segment"]}
             disabled={!isSelected}
             //onStop={dragEnded}
@@ -125,19 +134,15 @@ function Room({
                 }}
                 onKeyDown={deleteRoom}
                 tabIndex={-1}
-                style={{ outline: 0 }}
+                style={{outline: 0}}
             >
                 <Floor
                     polygon={getPolygon(points)}
                     //points={points}
                 />
 
-                {getPath(points).map(pathPoints => (
-                    <Segment
-                        key={pathPoints}
-                        pathPoints={pathPoints}
-                        visible={isSelected}
-                    />
+                {getPath(points).map((pathPoints, index) => (
+                    <Segment key={index} pathPoints={pathPoints} visible={isSelected} />
                 ))}
 
                 {points.map((point, index) => (
@@ -150,12 +155,8 @@ function Room({
                         visible={isSelected}
                     />
                 ))}
-                {getPath(points).map(pathPoints => (
-                    <Size
-                        key={pathPoints}
-                        pathPoints={pathPoints}
-                        visible={isSelected}
-                    />
+                {getPath(points).map((pathPoints, index) => (
+                    <Size key={index} pathPoints={pathPoints} visible={isSelected} />
                 ))}
             </g>
         </DraggableCore>

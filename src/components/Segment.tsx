@@ -2,15 +2,15 @@ import {line} from "d3-shape";
 import React from "react";
 import {DraggableCore} from "react-draggable";
 
-export default function Segment({ pathPoints, visible }) {
+export default function Segment({pathPoints, visible}) {
     const [a, b] = pathPoints;
 
     const [ax, ay] = a;
     const [bx, by] = b;
 
     let path = line()
-        .x(d => d[0])
-        .y(d => d[1]);
+        .x((d) => d[0])
+        .y((d) => d[1]);
 
     // let pointA = room.points.find(e => e.id === path[0].id)
     // let pointB = room.points.find(e => e.id === path[1].id)
