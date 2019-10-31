@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "dfa574ce2cda3dfad09f24e26036745c",
+    "revision": "c7a3270b9c791f0dd418ed71623f4587",
     "url": "/electricad/index.html"
   },
   {
-    "revision": "5dd91ca6e62876edbb25",
+    "revision": "fca4b4d9a15bea165d4d",
     "url": "/electricad/static/css/main.b185f5ee.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/electricad/static/js/2.ae122fae.chunk.js"
   },
   {
-    "revision": "5dd91ca6e62876edbb25",
-    "url": "/electricad/static/js/main.712a35db.chunk.js"
+    "revision": "fca4b4d9a15bea165d4d",
+    "url": "/electricad/static/js/main.d25bd7bb.chunk.js"
   },
   {
     "revision": "fea684205517bab5e1e8",
