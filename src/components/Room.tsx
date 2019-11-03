@@ -1,39 +1,38 @@
-import React, {useState} from "react";
-import {DraggableCore, DraggableData} from "react-draggable";
-import {Points} from "../interfaces";
-import {getPath, getPolygon} from "./../utils";
+import React, { useState, useEffect, useContext } from "react";
+import { RoomContext } from './../RoomContext'
+import { DraggableCore, DraggableData } from "react-draggable";
+import { Points } from "../interfaces";
+import { getPath, getPolygon, getAllPointsButThisRoom, getPointsAbsolutePosition, compareRoomPoints } from "./../utils";
 import Floor from "./Floor";
 import Point from "./Point";
 import Segment from "./Segment";
 import Size from "./Size";
 
 function Room({
-    setRooms,
-    setSelectedRoom,
     isSelected,
     roomIndex,
     id,
     coords,
-    room: defaultRoom,
+    room,
+    points: defaultPoints,
 }: {
-    setRooms: any;
-    setSelectedRoom: any;
     isSelected: boolean;
     roomIndex: number;
     id: string;
     coords: any;
     room: any;
+    points: Points;
 }) {
-    console.log("room rendering");
 
-    const [room, setRoom] = useState(defaultRoom);
+    const { __rooms, __selectedRoom } = useContext(RoomContext)
+    const [rooms, setRooms] = __rooms
+    const [selectedRoom, setSelectedRoom] = __selectedRoom
 
-    const [points, setPoints] = useState<Points>([
-        [0, 0],
-        [0, 150],
-        [150, 150],
-        [150, 0],
-    ]);
+    const [points, setPoints] = useState<Points>(defaultPoints);
+
+    useEffect(() => {
+        updateRoom(room, roomIndex)
+    }, [points])
 
     const deleteRoom = (e: any) => {
         if (isSelected) {
@@ -44,85 +43,60 @@ function Room({
     };
 
     const updateRoom = (room: any, index: number) => {
-        //console.log(' room updating')
         setRooms((rooms: any) => [
             ...rooms.slice(0, index),
-            {...room},
+            { ...room, points: points },
             ...rooms.slice(index + 1),
         ]);
     };
 
-    // const updatePoint = (coords, pointIndex) => {
-    //     console.log(pointIndex)
-    //     const room = new RoomObj(id, x, y)
-    //     room.points = points
-    //     room.points[pointIndex] = coords
-    //     updateRoom(room, roomIndex)
-
-    // }
-
     const dragging = (e: any, dnd: DraggableData) => {
-        e.preventDefault();
-        //console.log(e)
-        //console.log(dnd)
+        e.preventDefault()
 
-        coords[0] += dnd.deltaX;
-        coords[1] += dnd.deltaY;
+        coords[0] += dnd.deltaX
+        coords[1] += dnd.deltaY
 
-        //const room = new RoomObj(id, x, y)
-        //room.points = points
-
-        updateRoom(room, roomIndex);
+        updateRoom(room, roomIndex)
     };
 
-    // const dragEnded = (e, dnd) => {
-    //     roomX = dnd.x
-    //     roomY = dnd.y
+    const dragEnded = (e, dnd) => {
 
-    //     // let allOtherPoints = electricad
-    //     //     .filter(el => el.id !== room.id)
-    //     //     .reduce((acc, curr, i) => {
-    //     //         curr.points.map(point => {
-    //     //             point.dx = curr.x
-    //     //             point.dy = curr.y
-    //     //             acc.push(point)
-    //     //         })
-    //     //         return acc
-    //     //     }, [])
+        const roomPoints = getPointsAbsolutePosition(room)
 
-    //     let newPoints = room.points.map(pointA => {
-    //         allOtherPoints.map(pointB => {
-    //             let a = pointA.x + room.x
-    //             let b = pointB.x + pointB.dx
-    //             let dx = Math.abs(a - b)
-    //             //////console.log(dx)
-    //             if (dx <= 30) {
-    //                 //////console.log('x match')
-    //                 pointA.x = b - room.x
-    //             }
-    //         })
-    //         allOtherPoints.map(pointB => {
-    //             let a = pointA.y + room.y
-    //             let b = pointB.y + pointB.dy
-    //             let dy = Math.abs(a - b)
-    //             //////console.log(dx)
-    //             if (dy <= 30) {
-    //                 //////console.log('x match')
-    //                 pointA.y = b - room.y
-    //             }
-    //         })
-    //     })
-    //     ////console.log(room.points)
-    //     setRoom({ ...room })
-    // }
+        const allOtherPoints = getAllPointsButThisRoom(rooms, roomIndex)
+        let newPoints = roomPoints.map(pointA => {
+            allOtherPoints.map(pointB => {
+
+                let a = pointA[0] + pointA.dx
+                let b = pointB[0] + pointB.dx
+                let dx = Math.abs(a - b)
+                if (dx <= 10) {
+                    pointA[0] = b - pointA.dx
+                }
+            })
+            allOtherPoints.map(pointB => {
+                let a = pointA[1] + pointA.dy
+                let b = pointB[1] + pointB.dy
+                let dy = Math.abs(a - b)
+                if (dy <= 10) {
+                    pointA[1] = b - pointA.dy
+                }
+            })
+            return pointA
+        })
+
+        const roomUpdate = { ...room, points: newPoints }
+        updateRoom(roomUpdate, roomIndex)
+
+        compareRoomPoints(rooms)
+    }
 
     return (
         <DraggableCore
             handle=".room"
-            position={{x: coords[0], y: coords[1]}}
-            cancel={[".corner", ".segment"]}
+            cancel=".corner, .segment"
             disabled={!isSelected}
-            //onStop={dragEnded}
+            onStop={dragEnded}
             onDrag={dragging}
         >
             <g
@@ -134,29 +108,40 @@ function Room({
                 }}
                 onKeyDown={deleteRoom}
                 tabIndex={-1}
-                style={{outline: 0}}
+                style={{ outline: 0 }}
             >
                 <Floor
                     polygon={getPolygon(points)}
-                    //points={points}
                 />
 
                 {getPath(points).map((pathPoints, index) => (
-                    <Segment key={index} pathPoints={pathPoints} visible={isSelected} />
+                    <Segment
+                        key={index}
+                        pathPoints={pathPoints}
+                        visible={isSelected}
+                        segmentIndex={index}
+                        setPoints={setPoints}
+                        points={points}
+                    />
                 ))}
 
                 {points.map((point, index) => (
                     <Point
+                        coords={coords}//remove
                         key={index}
                         point={point}
-                        index={index}
-                        points={points}
+                        pointIndex={index}//remove
+                        points={points}//remove
                         setPoints={setPoints}
                         visible={isSelected}
                     />
                 ))}
                 {getPath(points).map((pathPoints, index) => (
-                    <Size key={index} pathPoints={pathPoints} visible={isSelected} />
+                    <Size
+                        key={index}
+                        pathPoints={pathPoints}
+                        visible={isSelected}
+                    />
                 ))}
             </g>
         </DraggableCore>
@@ -164,10 +149,4 @@ function Room({
 }
 
 export default Room;
-// export default React.memo(Room,
-//     (prevProps, nextProps) => {
-//         if (prevProps.room === nextProps.room && prevProps.isSelected === nextProps.isSelected) {
-//             return true;
-//         }
-//         return false;
-//     })
+

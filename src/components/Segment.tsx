@@ -1,122 +1,123 @@
-import {line} from "d3-shape";
-import React from "react";
-import {DraggableCore} from "react-draggable";
+import React, { useState, useContext } from "react";
+import { line } from "d3-shape";
+import { DraggableCore } from "react-draggable";
+import { Points } from './../interfaces'
+import { getAllPointsAbsolutePosition } from "../utils";
+import { RoomContext } from './../RoomContext'
 
-export default function Segment({pathPoints, visible}) {
-    const [a, b] = pathPoints;
+export default function Segment({
+    pathPoints,
+    visible,
+    segmentIndex,
+    setPoints,
+    points,
+}: {
+    pathPoints: any,
+    visible: boolean,
+    segmentIndex: number
+    setPoints: any,
+    points: any,
+}) {
 
-    const [ax, ay] = a;
-    const [bx, by] = b;
+    const { __quickMenuPosition, __quickMenuState, __selectedPathPoints, __rooms } = useContext(RoomContext)
+
+    const [quickMenuPosition, setQuickMenuPosition] = __quickMenuPosition
+    const [quickMenuState, setQuickMenuState] = __quickMenuState
+    const [selectedPathPoints, setSelectedPathPoints] = __selectedPathPoints
+    const [rooms, setRooms] = __rooms
+
+    const [isDragging, setIsDragging] = useState(false)
+
+    ////////console.log(pathPoints)
+    let [a, b] = pathPoints;
+
+    let data = [a.XY, b.XY]
+
+    ////////console.log(a)
+
+    let [ax, ay] = a.XY;
+    let [bx, by] = b.XY;
+
+    //////////console.log(ax)
 
     let path = line()
         .x((d) => d[0])
-        .y((d) => d[1]);
+        .y((d) => d[1])
 
-    // let pointA = room.points.find(e => e.id === path[0].id)
-    // let pointB = room.points.find(e => e.id === path[1].id)
+    const dragging = (e, dnd) => {
 
-    // //////console.log(path.length)
+        setIsDragging(true)
 
-    // let segment = line()
-    //     .x(d => d.x)
-    //     .y(d => d.y)
+        const newPathPoints = [...pathPoints]
+        newPathPoints[0] = [ax + dnd.deltaX, ay + dnd.deltaY]
+        newPathPoints[1] = [bx + dnd.deltaX, by + dnd.deltaY]
 
-    // const dragging = (e, dnd) => {
-    //     pointA.x = pointA.x + dnd.deltaX
-    //     pointB.x = pointB.x + dnd.deltaX
-    //     pointA.y = pointA.y + dnd.deltaY
-    //     pointB.y = pointB.y + dnd.deltaY
-    //     setElectricad([...electricad])
-    // }
+        const newPoints = [...points]
 
-    // const dragEnd = (e, dnd) => {
+        newPoints[a.i] = newPathPoints[0]
+        newPoints[b.i] = newPathPoints[1]
 
-    //     let allPoints = electricad.reduce((acc, curr, i) => {
-    //         curr.points.map(point => {
-    //             point.dx = curr.x
-    //             point.dy = curr.y
-    //             acc.push(point)
-    //         })
-    //         return acc
-    //     }, [])
+        setPoints([...newPoints])
+    }
 
-    //     let allOtherPoints = allPoints.filter(point => point.id !== pointA.id && point.id !== pointB.id)
+    const dragEnd = (e, dnd) => {
 
-    //     allOtherPoints.map(point => {
+        if (!isDragging) {
+            segmentClicked(e)
+            return
+        }
+        setIsDragging(false)
 
-    //         if (Math.abs((point.x + point.dx) - (pointA.x + pointA.dx)) <= 16) {
-    //             pointA.x = point.dx + point.x - pointA.dx
-    //         }
-    //         if (Math.abs((point.y + point.dy) - (pointA.y + pointA.dy)) <= 16) {
-    //             pointA.y = point.dy + point.y - pointA.dy
-    //         }
-    //         if (Math.abs((point.x + point.dx) - (pointB.x + pointB.dx)) <= 16) {
-    //             pointB.x = point.dx + point.x - pointB.dx
-    //         }
-    //         if (Math.abs((point.y + point.dy) - (pointB.y + pointB.dy)) <= 16) {
-    //             pointB.y = point.dy + point.y - pointB.dy
-    //         }
-    //         setElectricad([...electricad])
-    //     })
-    // }
+        let allPoints = getAllPointsAbsolutePosition(rooms)
 
-    // const addPoint = (e) => {
-    //     e.persist()
-    //     ////console.log(e.target.getBoundingClientRect())
-    //     ////console.log(e.clientX)
-    //     //console.log(e.target)
+        let newPoints = [...points]
+        //////console.log(newPoints)
 
-    //     let box = e.target.getBoundingClientRect()
-    //     //console.log(box.left)
-    //     //console.log(e.clientX)
-    //     let pointer = { x: e.clientX, y: e.clientY }
+        allPoints.map(el => {
 
-    //     let point = {}
+            if (Math.abs((el[0] + el.dx) - (ax + a.XY.dx)) <= 16) {
+                newPoints[a.i][0] = el.dx + el[0] - a.XY.dx
+                //////console.log('match')
+            }
+            if (Math.abs((el[1] + el.dy) - (ay + a.XY.dy)) <= 16) {
+                newPoints[a.i][1] = el.dy + el[1] - a.XY.dy
+                //////console.log('match')
 
-    //     point.x = pointer.x - box.left + path[0].x < path[1].x ? path[0].x : path[1].x
-    //     point.x = path[0].x < path[1].x ? pointer.x - box.left + path[0].x : pointer.x - box.left + path[1].x
-    //     //console.log(point.x)
-    //     // y = mx + b
+            }
+            if (Math.abs((el[0] + el.dx) - (bx + b.XY.dx)) <= 16) {
+                newPoints[b.i][0] = el.dx + el[0] - b.XY.dx
+                //////console.log('match')
 
-    //     let a = path[0]
-    //     let b = path[1]
+            }
+            if (Math.abs((el[1] + el.dy) - (by + b.XY.dy)) <= 16) {
+                newPoints[b.i][1] = el.dy + el[1] - b.XY.dy
+                //////console.log('match')
 
-    //     console.log(a.id.split('.')[2],b.id.split('.')[2])
+            }
+            setPoints([...newPoints])
+        })
+    }
 
-    //     let dx = a.x - b.x
-    //     let dy = a.y - b.y
+    const segmentClicked = e => {
+        console.log(e.type)
+        e.preventDefault()
 
-    //     let m =  dy / dx
-    //     let p = a.x - m * a.y
+        let x
+        let y
 
-    //     ////console.log(m)
+        if (e.type === 'mouseup') {
+            x = e.clientX
+            y = e.clientY
+        } else {
+            x = e.touches[0].pageX
+            y = e.touches[0].pageY
+        }
 
-    //     if (m === 0) {
-    //         ////console.log('ligne horizontale')
-    //         point.y = a.y
-    //     }
 
-    //     else if (m === Infinity || m === -Infinity) {
-    //         ////console.log('ligne verticale')
-    //         point.x = a.x
-    //         point.y = a.y < b.y ? Math.abs(pointer.y - box.top + a.y) : Math.abs(pointer.y - box.top + b.y)
-    //     }
-
-    //     else {
-    //          point.y = m * point.x + p + (a.x)
-    //         //point.y = m * point.x + p
-    //     }
-
-    //     point.id = room.id +'.corner.' + room.points.length +1
-
-    //     let index1 = room.points.findIndex(point => point.id === a.id)
-    //     let index2 = room.points.findIndex(point => point.id === b.id)
-
-    //     room.points.splice(index1 + 1 , 0, point)
-
-    //     setElectricad([...electricad])
-
-    // }
+        setQuickMenuPosition({ x, y })
+        setQuickMenuState(prev => !prev)
+        setSelectedPathPoints(pathPoints)
+    }
 
     if (!visible) {
         return null;
@@ -125,18 +126,18 @@ export default function Segment({pathPoints, visible}) {
     return (
         <DraggableCore
             handle=".segment"
-            // onStart={dragStarted}
-            //onDrag={dragging}
-            //onStop={dragEnd}
+            //onStart={() => setIsDragging(true)}
+            onDrag={dragging}
+            onStop={dragEnd}
         >
             <path
-                d={path(pathPoints)}
-                id={pathPoints}
+                d={path(data)}
+                id={a.i + '.' + b.i}
                 className="segment"
                 strokeWidth={20}
                 stroke="#77cfff"
                 opacity={0.8}
-                //onDoubleClick={addPoint}
+                //onClick={e => segmentClicked(e)}
             />
         </DraggableCore>
     );
