@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { RoomContext } from './../RoomContext'
 import { DraggableCore, DraggableData } from "react-draggable";
-import { Points } from "../interfaces";
-import { getPath, getPolygon, getAllPointsButThisRoom, getPointsAbsolutePosition, compareRoomPoints } from "./../utils";
+import { getPath, getPolygon, getAllPoints } from "./../utils";
 import Floor from "./Floor";
 import Point from "./Point";
 import Segment from "./Segment";
@@ -10,85 +9,59 @@ import Size from "./Size";
 
 function Room({
     isSelected,
-    roomIndex,
-    id,
-    coords,
     room,
-    points: defaultPoints,
+    i
 }: {
     isSelected: boolean;
-    roomIndex: number;
-    id: string;
-    coords: any;
     room: any;
-    points: Points;
+    i: number
 }) {
 
     const { __rooms, __selectedRoom } = useContext(RoomContext)
     const [rooms, setRooms] = __rooms
     const [selectedRoom, setSelectedRoom] = __selectedRoom
 
-    const [points, setPoints] = useState<Points>(defaultPoints);
-
-    useEffect(() => {
-        updateRoom(room, roomIndex)
-    }, [points])
-
     const deleteRoom = (e: any) => {
         if (isSelected) {
             if (e.keyCode === 8) {
-                setRooms((rooms: any) => rooms.filter((el: any) => el.id !== id));
+                setRooms((rooms: any) => rooms.filter((el: any) => el.id !== room.id));
             }
         }
-    };
-
-    const updateRoom = (room: any, index: number) => {
-        setRooms((rooms: any) => [
-            ...rooms.slice(0, index),
-            { ...room, points: points },
-            ...rooms.slice(index + 1),
-        ]);
     };
 
     const dragging = (e: any, dnd: DraggableData) => {
         e.preventDefault()
 
-        coords[0] += dnd.deltaX
-        coords[1] += dnd.deltaY
+        const newRooms = [...rooms]
+        newRooms[i].x += dnd.deltaX
+        newRooms[i].y += dnd.deltaY
 
-        updateRoom(room, roomIndex)
+        setRooms(newRooms)
     };
 
     const dragEnded = (e, dnd) => {
 
-        const roomPoints = getPointsAbsolutePosition(room)
+        const allPoints = getAllPoints(rooms)
 
-        const allOtherPoints = getAllPointsButThisRoom(rooms, roomIndex)
-        let newPoints = roomPoints.map(pointA => {
-            allOtherPoints.map(pointB => {
+        room.getPoints().forEach(point => {
+            console.log(point.room)
+            allPoints.forEach(otherPoint => {
+                console.log(otherPoint.room)
 
-                let a = pointA[0] + pointA.dx
-                let b = pointB[0] + pointB.dx
-                let dx = Math.abs(a - b)
-                if (dx <= 10) {
-                    pointA[0] = b - pointA.dx
+                let dx = Math.abs(point.absX - otherPoint.absX)
+                let dy = Math.abs(point.absY - otherPoint.absY)
+
+                if (point.room !== otherPoint.room) {
+                    if (dx <= 16) {
+                        rooms[i].points[point.i].x = otherPoint.absX - point.offsetX
+                    }
+                    if (dy <= 16) {
+                        rooms[i].points[point.i].y = otherPoint.absY - point.offsetY
+                    }
                 }
             })
-            allOtherPoints.map(pointB => {
-                let a = pointA[1] + pointA.dy
-                let b = pointB[1] + pointB.dy
-                let dy = Math.abs(a - b)
-                if (dy <= 10) {
-                    pointA[1] = b - pointA.dy
-                }
-            })
-            return pointA
         })
-
-        const roomUpdate = { ...room, points: newPoints }
-        updateRoom(roomUpdate, roomIndex)
-
-        compareRoomPoints(rooms)
+        setRooms([...rooms])
     }
 
     return (
@@ -101,42 +74,36 @@ function Room({
         >
             <g
                 className={"room"}
-                id={id}
-                transform={`translate(${coords[0]} ${coords[1]})`}
+                id={room.id}
+                transform={`translate(${room.x} ${room.y})`}
                 onClick={() => {
-                    setSelectedRoom(id);
+                    setSelectedRoom(room.id);
                 }}
                 onKeyDown={deleteRoom}
                 tabIndex={-1}
                 style={{ outline: 0 }}
             >
                 <Floor
-                    polygon={getPolygon(points)}
+                    polygon={getPolygon(room.getPoints())}
                 />
 
-                {getPath(points).map((pathPoints, index) => (
+                {getPath(room.getPoints()).map((pathPoints, index) => (
                     <Segment
                         key={index}
                         pathPoints={pathPoints}
                         visible={isSelected}
                         segmentIndex={index}
-                        setPoints={setPoints}
-                        points={points}
                     />
                 ))}
 
-                {points.map((point, index) => (
+                {room.getPoints().map((point, index) => (
                     <Point
-                        coords={coords}//remove
                         key={index}
                         point={point}
-                        pointIndex={index}//remove
-                        points={points}//remove
-                        setPoints={setPoints}
                         visible={isSelected}
                     />
                 ))}
-                {getPath(points).map((pathPoints, index) => (
+                {getPath(room.getPoints()).map((pathPoints, index) => (
                     <Size
                         key={index}
                         pathPoints={pathPoints}

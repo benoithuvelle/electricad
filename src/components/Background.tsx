@@ -2,20 +2,15 @@ import React, { useContext } from "react";
 import { RoomContext } from './../RoomContext'
 
 export default function Background({
-    //setSelectedRoom,
-    //setRooms,
-    //rooms,
     width,
     height,
 }: {
-    //setSelectedRoom: any;
-    //setRooms: any;
-    //rooms: any;
     width: number;
     height: number;
 }) {
 
     const { __selectedRoom, __rooms } = useContext(RoomContext)
+
     const [rooms, setRooms] = __rooms
     const [_, setSelectedRoom] = __selectedRoom
 
@@ -31,18 +26,26 @@ export default function Background({
 
         const room = {
             id: id,
-            coords: [e.clientX - 75, e.clientY - 75],
-            points: [[0, 0], [0, 150], [150, 150], [150, 0]],
+            x : e.clientX ? e.clientX - 75 : width/2,
+            y : e.clientY ? e.clientY - 75 : height/2,
+            points: [
+                {x : 0, y : 0},
+                {x : 0, y : 150},
+                {x : 150, y : 150},
+                {x : 150, y : 0},
+            ],
             getPoints() {
                 return this.points.reduce((acc, curr, i) => {
                     acc[i] = {
-                        x : curr[0],
-                        y : curr[1],
-                        absX : curr[0] + this.coords[0],
-                        absY : curr[1] + this.coords[1],
-                        offsetX : this.coords[0],
-                        offsetY : this.coords[1],
-                        i
+                        x : curr.x,
+                        y : curr.y,
+                        absX : curr.x + this.x,
+                        absY : curr.y + this.y,
+                        offsetX : this.x,
+                        offsetY : this.y,
+                        i,
+                        room : id,
+                        id : `${this.id}.${i}`
                     }
                     return acc
                 }, [])
@@ -51,16 +54,25 @@ export default function Background({
 
         setRooms([...rooms, room]);
         setSelectedRoom(room.id);
-    };  
+    }
+
+    const keyHandler = e => {
+        console.log('coucou')
+        if (e.keyCode === 78) {
+            addRoom(e)
+        }
+    }
 
     return (
         <rect
+            tabIndex={-1}
             id="background"
             width={width}
             height={height}
             fill="#38a0f9"
             onDoubleClick={addRoom}
             onClick={() => setSelectedRoom(null)}
+            onKeyDown={keyHandler}
         />
     );
 }

@@ -5,11 +5,10 @@ import { RoomContext } from "../RoomContext";
 
 export default function Plan() {
 
-    const { __rooms, __selectedRoom, __selectedPathPoints } = useContext(RoomContext)
+    const { __rooms, __selectedRoom } = useContext(RoomContext)
 
-    const [rooms, setRooms] = __rooms;
-    const [selectedRoom, setSelectedRoom] = __selectedRoom;
-    const [selectedPathPoints, setSelectedPathPoints] = __selectedPathPoints
+    const [rooms] = __rooms;
+    const [selectedRoom] = __selectedRoom;
     const width = window.innerWidth;
     const height = window.innerHeight;
 
@@ -30,12 +29,9 @@ export default function Plan() {
                     return (
                         <Room
                             key={room.id}
-                            roomIndex={i}
-                            id={room.id}
-                            coords={room.coords}
                             isSelected={selectedRoom === room.id ? true : false}
                             room={room}
-                            points={room.points}
+                            i={i}
                         />
                     );
                 })}

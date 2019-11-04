@@ -2,16 +2,16 @@ import { Path, Points } from "./interfaces";
 import { Room } from './interfaces'
 import Point from "./components/Point";
 
-export function getPolygon(points: Points) {
-    return points.map((point) => [point[0], point[1]].join(" "));
+export function getPolygon(points) {
+    return points.map((point) => [point.x, point.y].join(" "));
 }
 
-export function getPath(points: Points) {
+export function getPath(points) {
     return points.reduce((acc, current, i) => {
-        acc[i] = [{ XY: current, i: i }];
+        acc[i] = [
+            current];
         if (i > 0) {
-
-            acc[i - 1].push({ XY: current, i: i })
+            acc[i - 1].push(current)
         }
         if (i === points.length - 1) acc[i].push(acc[0][0]);
         return acc;
@@ -44,40 +44,40 @@ export function getPointsAbsolutePosition(room) {
     return array
 }
 
-export function getAllPointsAbsolutePosition(rooms) {
+export function getAllPoints(rooms) {
     let array = rooms.reduce((acc, curr, i) => {
-        const roomPoints = getPointsAbsolutePosition(curr)
+        const roomPoints = curr.getPoints()
         acc.push(...roomPoints)
         return acc
     }, [])
     return array
 }
 
-export function getThisRoomPoints(room : Room): Points {
+export function getThisRoomPoints(room: Room): Points {
     let array = room.points.reduce((acc, curr, i) => {
         acc[i] = {
-            x : curr[0],
-            y : curr[1],
-            dx : curr[0] + room.coords[0],
-            dy : curr[1] + room.coords[1],
-            i : i
+            x: curr[0],
+            y: curr[1],
+            dx: curr[0] + room.coords[0],
+            dy: curr[1] + room.coords[1],
+            i: i
         }
     }, [])
     return array
 }
 
-export function compareRoomPoints(rooms) {
-    rooms.forEach((room, i) => {
-        const allPoints = getAllPointsButThisRoom(rooms, i)
-        let paths = getPath(room.points)
-        paths.forEach(path => {
-            allPoints.forEach(point => {
-                console.log(point)
-                isPointInPath(path, point)
-            });
-        });
-    });
-}
+// export function compareRoomPoints(rooms) {
+//     rooms.forEach((room, i) => {
+//         const allPoints = getAllPointsButThisRoom(rooms, i)
+//         let paths = getPath(room.points)
+//         paths.forEach(path => {
+//             allPoints.forEach(point => {
+//                 console.log(point)
+//                 isPointInPath(path, point)
+//             });
+//         });
+//     });
+// }
 
 export function isPointInPath(path, point) {
     const [a, b] = path
@@ -92,7 +92,7 @@ export function isPointInPath(path, point) {
     const dx = bx - ax
     const dy = by - ay
 
-    const m = dy/dx
+    const m = dy / dx
 
     // ay = m * ax + offset  
 

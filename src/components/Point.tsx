@@ -2,59 +2,53 @@ import React, { useContext } from "react";
 import { RoomContext } from './../RoomContext'
 import { DraggableCore, DraggableData } from "react-draggable";
 import { Points, XY } from "../interfaces";
-import { getPointsAbsolutePosition, getAllPointsAbsolutePosition } from "../utils";
+import {  getAllPoints } from "../utils";
 
 function Point({
-    coords,
     point,
-    pointIndex,
-    points,
-    setPoints,
     visible,
 }: {
-    coords: any;
     point: any;
-    pointIndex: number;
-    points: any;
-    setPoints: any;
     visible: boolean;
 }) {
 
     const { __rooms } = useContext(RoomContext)
     const [rooms, setRooms] = __rooms
-
+    
+    const roomIndex = rooms.findIndex(room => room.id === point.room)
 
     if (!visible) {
         return null;
     }
 
-    const x = point[0];
-    const y = point[1];
-
     const dragging = (e: any, dnd: DraggableData) => {
-        const newPoints = [...points];
-        newPoints[pointIndex] = [x + dnd.deltaX, y + dnd.deltaY];
-        setPoints(newPoints);
+
+        rooms[roomIndex].points[point.i].x = point.x + dnd.deltaX
+        rooms[roomIndex].points[point.i].y = point.y + dnd.deltaY
+
+        setRooms([...rooms])
     };
 
     const dragEnd = () => {
 
-        let newPoints = [...points]
+        let allPoints = getAllPoints(rooms)
 
-        let allPoints = getAllPointsAbsolutePosition(rooms)
+        console.log(allPoints)
 
         allPoints.map(otherPoint => {
-            if (otherPoint !== point) {
-                if (Math.abs((point[0] + coords[0]) - (otherPoint[0] + otherPoint.dx)) < 10) {
-                    newPoints[pointIndex][0] = otherPoint[0] + otherPoint.dx - coords[0]
+            console.log(otherPoint.i)
+            console.log(otherPoint.room)
+            if (otherPoint.room !== point.room || otherPoint.i !== point.i) {
+                if (Math.abs(point.absX - otherPoint.absX) < 16) {
+                    rooms[roomIndex].points[point.i].x = otherPoint.absX - point.offsetX
                 }
-                if (Math.abs((point[1] + coords[1]) - (otherPoint[1] + otherPoint.dy)) < 10) {
-                    console.log('match')
-                    newPoints[pointIndex][1] = otherPoint[1] + otherPoint.dy - coords[1]
+                if (Math.abs(point.absY - otherPoint.absY) < 16) {
+                    rooms[roomIndex].points[point.i].y = otherPoint.absY - point.offsetY
                 }
+                
             }
         })
-        setPoints(newPoints)
+        setRooms([...rooms])
     };
 
     return (
@@ -66,22 +60,22 @@ function Point({
             <g>
                 <circle
                     className="corner"
-                    cx={x}
-                    cy={y}
+                    cx={point.x}
+                    cy={point.y}
                     r={16}
                     fill={"white"}
                     stroke={"#38a0f9"}
                     strokeWidth={4}
                 />
                 <text
-                    x={x}
-                    y={y}
+                    x={point.x}
+                    y={point.y}
                     textAnchor="middle"
                     alignmentBaseline="central"
                     pointerEvents="none"
                     fill="grey"
                 >
-                    {2}
+                    {point.i}
                 </text>
             </g>
         </DraggableCore>

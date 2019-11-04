@@ -2,11 +2,9 @@ import React from "react";
 
 function Size({pathPoints, visible}) {
     const [a, b] = pathPoints;
-    const [ax, ay] = a.XY;
-    const [bx, by] = b.XY;
 
-    var dx = ax - bx;
-    var dy = ay - by;
+    var dx = a.x - b.x;
+    var dy = a.y - b.y;
 
     var c = Math.round(Math.floor(Math.sqrt(dx * dx + dy * dy)/5)*5)
 
