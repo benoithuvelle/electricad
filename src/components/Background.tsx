@@ -51,7 +51,7 @@ export default function Background({
 
         setRooms([...rooms, room]);
         setSelectedRoom(room.id);
-    };
+    };  
 
     return (
         <rect
