@@ -6,6 +6,7 @@ import Floor from "./Floor";
 import Point from "./Point";
 import Segment from "./Segment";
 import Size from "./Size";
+import Door from './Door'
 
 function Room({
     isSelected,
@@ -44,9 +45,7 @@ function Room({
         const allPoints = getAllPoints(rooms)
 
         room.getPoints().forEach(point => {
-            console.log(point.room)
             allPoints.forEach(otherPoint => {
-                console.log(otherPoint.room)
 
                 let dx = Math.abs(point.absX - otherPoint.absX)
                 let dy = Math.abs(point.absY - otherPoint.absY)
@@ -108,6 +107,12 @@ function Room({
                         key={index}
                         pathPoints={pathPoints}
                         visible={isSelected}
+                    />
+                ))}
+                {room.doors.map((door, i) => (
+                    <Door 
+                        key={i}
+                        door={door}
                     />
                 ))}
             </g>

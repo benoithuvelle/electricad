@@ -49,7 +49,8 @@ export default function Background({
                     }
                     return acc
                 }, [])
-            }
+            },
+            doors : []
         };
 
         setRooms([...rooms, room]);
@@ -57,7 +58,6 @@ export default function Background({
     }
 
     const keyHandler = e => {
-        console.log('coucou')
         if (e.keyCode === 78) {
             addRoom(e)
         }
@@ -65,6 +65,7 @@ export default function Background({
 
     return (
         <rect
+            style={{'outline':'none'}}
             tabIndex={-1}
             id="background"
             width={width}

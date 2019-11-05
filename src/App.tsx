@@ -11,13 +11,19 @@ function App() {
     const __rooms = useState([])
     const __selectedRoom = useState(null)
     const __selectedPathPoints = useState(null)
+    const __pointer = useState(null)
+    const __doors = useState([])
+    const __pathNode = useState(null)
 
     const CTX = {
         __quickMenuPosition,
         __quickMenuState,
         __selectedRoom,
         __rooms,
-        __selectedPathPoints
+        __selectedPathPoints,
+        __pointer,
+        __doors,
+        __pathNode
     }
     
 

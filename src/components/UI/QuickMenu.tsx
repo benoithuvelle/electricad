@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Menu, MenuItem } from '@material-ui/core'
-import { addCorner } from './../../utils'
+import { getPointCoords, getPath, getAllPoints } from './../../utils'
 import { RoomContext } from './../../RoomContext'
 
 const QuickMenu = () => {
@@ -10,7 +10,10 @@ const QuickMenu = () => {
         __quickMenuState,
         __selectedPathPoints,
         __rooms,
-        __selectedRoom
+        __selectedRoom,
+        __pointer,
+        __doors,
+        __pathNode
     } = useContext(RoomContext)
 
     const [quickMenuPosition, setQuickMenuPosition] = __quickMenuPosition
@@ -18,15 +21,68 @@ const QuickMenu = () => {
     const [selectedPathPoints, setSelectedPathPoints] = __selectedPathPoints
     const [rooms, setRooms] = __rooms
     const [selectedRoom, setSelectedRoom] = __selectedRoom
-
+    const [pointer] = __pointer
+    const [doors, setDoors] = __doors
+    const [pathNode] = __pathNode
+    
+    //console.log(pointer)
+    
     const handleClose = (e) => {
         setQuickMenuState(false)
         setQuickMenuPosition(null)
     }
-
-    const addDoor = e => {
-        console.log('selectedPathPoints', selectedPathPoints)
+    
+    const addCorner = e => {
+        e.persist()
+        console.log(e)
+        
+        const [a, b] = selectedPathPoints
+        const roomIndex = rooms.findIndex(room => room.id === a.room)
+        
+        const x = pointer.x - rooms[roomIndex].x
+        const y = pointer.y - rooms[roomIndex].y
+        
+        const newPoint = getPointCoords([x, y], selectedPathPoints)
+        
+        console.log(newPoint)
+        
+        getAllPoints(rooms).forEach(point => {
+            console.log(newPoint)
+            if (Math.abs(point.absX - (newPoint.x + rooms[roomIndex].x)) < 16) {
+                newPoint.x = point.absX - rooms[roomIndex].x
+            }
+            if (Math.abs(point.absY - (newPoint.y + rooms[roomIndex].y)) < 16) {
+                newPoint.y = point.absY - rooms[roomIndex].y
+            }
+        })
+        
+        const point1 = { ...newPoint }
+        const point2 = { ...newPoint }
+        
+        rooms[roomIndex].points.splice(a.i + 1, 0, point1, point2)
+        setRooms([...rooms])
+        
         handleClose(e)
+    }
+    
+    const addDoor = e => {
+        
+        const [a, b] = selectedPathPoints
+        
+        const roomIndex = rooms.findIndex(room => room.id === a.room)
+
+        const XFromOrigin = pointer.x - rooms[roomIndex].x
+
+        const pointsIds = { a: a.id, b: b.id }
+
+        const door = { pointsIds, XFromOrigin }
+
+        rooms[roomIndex].doors.push(door)
+        
+        setRooms([...rooms])
+        
+        handleClose(e)
+
     }
 
 
@@ -44,17 +100,7 @@ const QuickMenu = () => {
             onClose={handleClose}
         >
             <MenuItem
-                onClick={(e) => {
-                    const newPoints = addCorner(e, selectedPathPoints)
-                    const index1 = selectedPathPoints[0].i
-                    const index2 = selectedPathPoints[1].i
-                    const newRooms = [...rooms]
-                    const index = newRooms.findIndex(room => room.id === selectedRoom)
-                    newRooms[index] = { ... newRooms[index], points : newRooms[index].points.splice(index1 + 1, 0, ...newPoints)}
-                    setRooms(newRooms)
-
-                    handleClose(e)
-                }}>
+                onClick={addCorner}>
                 new corner
             </MenuItem>
 

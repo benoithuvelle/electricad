@@ -16,12 +16,14 @@ export default function Segment({
     segmentIndex: number
 }) {
 
-    const { __quickMenuPosition, __quickMenuState, __selectedPathPoints, __rooms } = useContext(RoomContext)
+    const { __quickMenuPosition, __quickMenuState, __selectedPathPoints, __rooms, __pointer, __pathNode } = useContext(RoomContext)
 
     const [quickMenuPosition, setQuickMenuPosition] = __quickMenuPosition
     const [quickMenuState, setQuickMenuState] = __quickMenuState
     const [selectedPathPoints, setSelectedPathPoints] = __selectedPathPoints
     const [rooms, setRooms] = __rooms
+    const [pointer, setPointer] = __pointer
+    const [pathNode, setPathNode] = __pathNode
 
     const [isDragging, setIsDragging] = useState(false)
 
@@ -66,7 +68,7 @@ export default function Segment({
 
         pathPoints.forEach(pathPoint => {
             allPoints.forEach(point => {
-                if (pathPoint.room !== point.room) {
+                if (pathPoint.id !== point.id) {
                     if (Math.abs(pathPoint.absX - point.absX) <= 16) {
                         rooms[roomIndex].points[pathPoint.i].x = point.absX - pathPoint.offsetX
                     }
@@ -80,7 +82,7 @@ export default function Segment({
     }
 
     const segmentClicked = e => {
-        console.log(e.type)
+        setPointer({x : e.clientX, y : e.clientY})
         e.preventDefault()
 
         let x
@@ -98,11 +100,12 @@ export default function Segment({
         setQuickMenuPosition({ x, y })
         setQuickMenuState(prev => !prev)
         setSelectedPathPoints(pathPoints)
+        setPathNode(e.target)
     }
 
-    if (!visible) {
-        return null;
-    }
+    // if (!visible) {
+    //     return null;
+    // }
 
     return (
         <DraggableCore
@@ -112,8 +115,9 @@ export default function Segment({
             onStop={dragEnd}
         >
             <path
+                style={ visible ?  { visibility : "visible" } : { visibility : 'hidden'}}
                 d={path(data)}
-                id={a.i + '.' + b.i}
+                id={a.room + '.' + a.i + '.' + b.i}
                 className="segment"
                 strokeWidth={20}
                 stroke="#77cfff"
