@@ -30,9 +30,9 @@ export default function Background({
             y : e.clientY ? e.clientY - 75 : height/2,
             points: [
                 {x : 0, y : 0},
-                {x : 0, y : 150},
-                {x : 150, y : 150},
-                {x : 150, y : 0},
+                {x : 0, y : 200},
+                {x : 200, y : 200},
+                {x : 200, y : 0},
             ],
             getPoints() {
                 return this.points.reduce((acc, curr, i) => {

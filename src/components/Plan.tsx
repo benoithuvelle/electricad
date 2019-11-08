@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import Background from "./Background";
 import Room from "./Room";
+import Door from './Door'
 import { RoomContext } from "../RoomContext";
 
 export default function Plan() {
@@ -14,7 +15,14 @@ export default function Plan() {
     const [doors] = __doors;
 
     return (
-        <svg width={width} height={height}>
+        <svg
+            id='plan'
+            width={width}
+            height={height}
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink"
+        >
+
             <Background
                 width={width}
                 height={height}
@@ -38,6 +46,16 @@ export default function Plan() {
                         );
                     })
             }
+            {/* {rooms.reduce((acc, curr, i) => {
+                acc.push(...curr.doors)
+                return acc
+            }, []).map((door, i) => (
+                    <Door
+                        key={i}
+                        door={door}
+                        i={i}
+                    />
+                ))} */}
 
 
 

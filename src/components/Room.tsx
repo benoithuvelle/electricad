@@ -66,7 +66,7 @@ function Room({
     return (
         <DraggableCore
             handle=".room"
-            cancel=".corner, .segment"
+            cancel=".corner, .segment, .doorCenter"
             disabled={!isSelected}
             onStop={dragEnded}
             onDrag={dragging}
@@ -110,9 +110,10 @@ function Room({
                     />
                 ))}
                 {room.doors.map((door, i) => (
-                    <Door 
+                    <Door
                         key={i}
                         door={door}
+                        i={i}
                     />
                 ))}
             </g>

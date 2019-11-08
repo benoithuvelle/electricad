@@ -113,6 +113,7 @@ export default function Segment({
             //onStart={() => setIsDragging(true)}
             onDrag={dragging}
             onStop={dragEnd}
+            cancel=".doorCenter"
         >
             <path
                 style={ visible ?  { visibility : "visible" } : { visibility : 'hidden'}}
@@ -121,6 +122,8 @@ export default function Segment({
                 className="segment"
                 strokeWidth={20}
                 stroke="#77cfff"
+                strokeLinecap='round'
+                strokeLinejoin='round'
                 opacity={0.8}
             //onClick={e => segmentClicked(e)}
             />

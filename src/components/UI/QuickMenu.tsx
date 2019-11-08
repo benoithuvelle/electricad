@@ -24,28 +24,29 @@ const QuickMenu = () => {
     const [pointer] = __pointer
     const [doors, setDoors] = __doors
     const [pathNode] = __pathNode
-    
+
     //console.log(pointer)
-    
+
     const handleClose = (e) => {
         setQuickMenuState(false)
         setQuickMenuPosition(null)
     }
-    
+
     const addCorner = e => {
         e.persist()
         console.log(e)
-        
+
+
         const [a, b] = selectedPathPoints
         const roomIndex = rooms.findIndex(room => room.id === a.room)
-        
+
         const x = pointer.x - rooms[roomIndex].x
         const y = pointer.y - rooms[roomIndex].y
-        
+
         const newPoint = getPointCoords([x, y], selectedPathPoints)
-        
+
         console.log(newPoint)
-        
+
         getAllPoints(rooms).forEach(point => {
             console.log(newPoint)
             if (Math.abs(point.absX - (newPoint.x + rooms[roomIndex].x)) < 16) {
@@ -55,32 +56,40 @@ const QuickMenu = () => {
                 newPoint.y = point.absY - rooms[roomIndex].y
             }
         })
-        
+
         const point1 = { ...newPoint }
         const point2 = { ...newPoint }
-        
+
         rooms[roomIndex].points.splice(a.i + 1, 0, point1, point2)
         setRooms([...rooms])
-        
+
         handleClose(e)
     }
-    
+
     const addDoor = e => {
-        
+
         const [a, b] = selectedPathPoints
-        
+        console.log(a,b)
+
         const roomIndex = rooms.findIndex(room => room.id === a.room)
 
-        const XFromOrigin = pointer.x - rooms[roomIndex].x
+        // const x = Math.abs(pointer.x - a.absX)
+        // const y = Math.abs(pointer.y - b.absY)
+        //const doorCenter = { x, y }
+
+        const x = pointer.x - rooms[roomIndex].x
+        const y = pointer.y - rooms[roomIndex].y
+        const doorCenter = getPointCoords([x, y], selectedPathPoints)
+        console.log(doorCenter)
 
         const pointsIds = { a: a.id, b: b.id }
 
-        const door = { pointsIds, XFromOrigin }
+        const door = { pointsIds, doorCenter }
 
         rooms[roomIndex].doors.push(door)
-        
+
         setRooms([...rooms])
-        
+
         handleClose(e)
 
     }

@@ -7,14 +7,15 @@ function Size({pathPoints, visible}) {
     var dy = a.y - b.y;
 
     var c = Math.round(Math.floor(Math.sqrt(dx * dx + dy * dy)/5)*5)
+    //console.log(c)
 
     if (!visible) {
         return null;
     }
 
-    return (
+    return ( // need to 
         <text style={{pointerEvents:'none', fill:'#404040'}}>
-            <textPath startOffset="45%" xlinkHref={"#" + a.i + '.' + b.i}>
+            <textPath startOffset="45%" xlinkHref={"#" + a.room + '.' + a.i + '.' + b.i}>
                 {c}
             </textPath>
         </text>

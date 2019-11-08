@@ -50,3 +50,52 @@ export const getPointCoords = (clickCoords, pathPoints) => {   // y = m*x + p
 
 }
 
+export function getY(point, pathPoints) {
+
+    const [a,b] = pathPoints
+    // y = m * x + p
+    const dx = b.x - a.x
+    const dy = b.y - a.y
+    const m = dy / dx
+    const p = a.y - m * a.x
+
+    let x
+    let y
+
+    if (m === 0) {
+        x = point.x
+        y = a.y
+    } else if (!isFinite(m)) {
+        x = a.x
+        y = point.y
+    } else {
+        x = point.x
+        y = m * point.x + p
+    }
+    return {x,y}
+}
+
+export function closestPointToSegment(point, a, b ) {
+    console.log(point)
+}
+
+export function project( p, a, b ) {
+    
+    var atob = { x: b.x - a.x, y: b.y - a.y };
+    var atop = { x: p.x - a.x, y: p.y - a.y };
+    var len = atob.x * atob.x + atob.y * atob.y;
+    var dot = atop.x * atob.x + atop.y * atob.y;
+    var t = Math.min( 1, Math.max( 0, dot / len ) );
+
+    dot = ( b.x - a.x ) * ( p.y - a.y ) - ( b.y - a.y ) * ( p.x - a.x );
+    
+    return {
+        point: {
+            x: a.x + atob.x * t,
+            y: a.y + atob.y * t
+        },
+        left: dot < 1,
+        dot: dot,
+        t: t
+    };
+}
