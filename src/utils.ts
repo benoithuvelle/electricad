@@ -1,7 +1,3 @@
-import { Path, Points } from "./interfaces";
-import { Room } from './interfaces'
-import Point from "./components/Point";
-
 export function getPolygon(points) {
     return points.map((point) => [point.x, point.y].join(" "));
 }
@@ -31,11 +27,11 @@ export const getPointCoords = (clickCoords, pathPoints) => {   // y = m*x + p
     const [a, b] = pathPoints
     let [x, y] = clickCoords
 
-    console.log('x', x)
-    console.log('y', y)
+    //console.log('x', x)
+    //console.log('y', y)
 
     const m = (b.y - a.y) / (b.x - a.x)
-    console.log('m',m)
+    //console.log('m',m)
     const p = a.y - m*a.x
 
     if (m === 0) {
@@ -76,7 +72,7 @@ export function getY(point, pathPoints) {
 }
 
 export function closestPointToSegment(point, a, b ) {
-    console.log(point)
+    //console.log(point)
 }
 
 export function project( p, a, b ) {

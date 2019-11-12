@@ -1,22 +1,28 @@
 import React, { useContext } from 'react'
-import { getY, project } from '../utils'
+import { project } from '../utils'
 import { RoomContext } from "../RoomContext"
 import { DraggableCore } from "react-draggable"
 
 export default function Door({ door, i }) {
 
     const { __rooms } = useContext(RoomContext)
-    
-    const [rooms, setRooms] = __rooms
-    
-    const { pointsIds, doorCenter } = door
-    
-    const room = rooms.find(({id}) => id === pointsIds.a.split('.')[0])
-       
-    const a = room.getPoints().find(({id}) => id === pointsIds.a)
-    const b = room.getPoints().find(({id}) => id === pointsIds.b)
 
-    const coords = project(doorCenter, a, b).point
+    const [rooms, setRooms] = __rooms
+
+    const { pointsIds, doorCenter, doorId } = door
+
+    const room = rooms.find(({ id }) => id === pointsIds.a.split('.')[0])
+
+    const a = room.getPoints().find(({ id }) => id === pointsIds.a)
+    const b = room.getPoints().find(({ id }) => id === pointsIds.b)
+
+    const side1 = { x: doorCenter.x - 50, y: doorCenter.y - 50 }
+    const side2 = { x: doorCenter.x + 50, y: doorCenter.y + 50 }
+
+    //console.log(side1)
+
+    const p1 = project(side1, a, b).point
+    const p2 = project(side2, a, b).point
 
     const dragging = (e, dnd) => {
 
@@ -37,15 +43,20 @@ export default function Door({ door, i }) {
             handle=".doorCenter"
             onDrag={dragging}
         >
-            <circle
+
+            <line
                 className='doorCenter'
-                cx={coords.x}
-                cy={coords.y}
-                r={10}
+                id={doorId}
+                x1={p1.x}
+                y1={p1.y}
+                x2={p2.x}
+                y2={p2.y}
                 fill='#ffffaa'
-                stroke="steelblue"
-                strokeWidth={4}
+                stroke="#ffffaa"
+                strokeWidth={8}
             />
+
+
         </DraggableCore>
     )
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { RoomContext } from './../RoomContext'
 import { DraggableCore, DraggableData } from "react-draggable";
 import { getPath, getPolygon, getAllPoints } from "./../utils";
@@ -7,20 +7,20 @@ import Point from "./Point";
 import Segment from "./Segment";
 import Size from "./Size";
 import Door from './Door'
+import Outlet from './ELECTRICAL/Outlet'
+import Switch from './ELECTRICAL/Switch'
 
 function Room({
     isSelected,
     room,
     i
-}: {
-    isSelected: boolean;
-    room: any;
-    i: number
 }) {
 
     const { __rooms, __selectedRoom } = useContext(RoomContext)
     const [rooms, setRooms] = __rooms
-    const [selectedRoom, setSelectedRoom] = __selectedRoom
+    const setSelectedRoom = __selectedRoom[1]
+
+    //console.log(room.outlets)
 
     const deleteRoom = (e: any) => {
         if (isSelected) {
@@ -40,7 +40,7 @@ function Room({
         setRooms(newRooms)
     };
 
-    const dragEnded = (e, dnd) => {
+    const dragEnded = () => {
 
         const allPoints = getAllPoints(rooms)
 
@@ -66,7 +66,7 @@ function Room({
     return (
         <DraggableCore
             handle=".room"
-            cancel=".corner, .segment, .doorCenter"
+            cancel=".corner, .segment, .doorCenter, .outlet, .switch"
             disabled={!isSelected}
             onStop={dragEnded}
             onDrag={dragging}
@@ -86,36 +86,61 @@ function Room({
                     polygon={getPolygon(room.getPoints())}
                 />
 
-                {getPath(room.getPoints()).map((pathPoints, index) => (
-                    <Segment
-                        key={index}
-                        pathPoints={pathPoints}
-                        visible={isSelected}
-                        segmentIndex={index}
-                    />
-                ))}
+                {
+                    getPath(room.getPoints()).map((pathPoints, index) => (
+                        <Segment
+                            key={index}
+                            pathPoints={pathPoints}
+                            visible={isSelected}
+                        />
+                    ))
+                }
 
-                {room.getPoints().map((point, index) => (
-                    <Point
-                        key={index}
-                        point={point}
-                        visible={isSelected}
-                    />
-                ))}
-                {getPath(room.getPoints()).map((pathPoints, index) => (
-                    <Size
-                        key={index}
-                        pathPoints={pathPoints}
-                        visible={isSelected}
-                    />
-                ))}
-                {room.doors.map((door, i) => (
-                    <Door
-                        key={i}
-                        door={door}
-                        i={i}
-                    />
-                ))}
+                {
+                    room.getPoints().map((point, index) => (
+                        <Point
+                            key={index}
+                            point={point}
+                            visible={isSelected}
+                        />
+                    ))
+                }
+                {
+                    getPath(room.getPoints()).map((pathPoints, index) => (
+                        <Size
+                            key={index}
+                            pathPoints={pathPoints}
+                            visible={isSelected}
+                        />
+                    ))
+                }
+                {
+                    room.doors.map((door, i) => (
+                        <Door
+                            key={i}
+                            door={door}
+                            i={i}
+                        />
+                    ))
+                }
+                {
+                    room.outlets.map((outlet, i) => (
+                        <Outlet
+                            key={i}
+                            outlet={outlet}
+                            i={i}
+                        />
+                    ))
+                }
+                {
+                    room.switches.map((__switch, i) => (
+                        <Switch
+                            key={i}
+                            __switch={__switch}
+                            i={i}
+                        />
+                    ))
+                }
             </g>
         </DraggableCore>
     );

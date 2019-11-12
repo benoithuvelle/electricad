@@ -12,7 +12,7 @@ export default function Background({
     const { __selectedRoom, __rooms } = useContext(RoomContext)
 
     const [rooms, setRooms] = __rooms
-    const [_, setSelectedRoom] = __selectedRoom
+    const setSelectedRoom = __selectedRoom[1]
 
     const addRoom = (e: any) => {
         const id = window.prompt("Dénomination de la pièce");
@@ -50,7 +50,9 @@ export default function Background({
                     return acc
                 }, [])
             },
-            doors : []
+            doors : [],
+            outlets : [],
+            switches : []
         };
 
         setRooms([...rooms, room]);
@@ -71,6 +73,7 @@ export default function Background({
             width={width}
             height={height}
             fill="#38a0f9"
+            //fill="white"
             onDoubleClick={addRoom}
             onClick={() => setSelectedRoom(null)}
             onKeyDown={keyHandler}

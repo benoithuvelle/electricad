@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import Plan from "./components/Plan";
 import "./App.css";
 import QuickMenu from './components/UI/QuickMenu'
+import OutletPropertiesMenu from './components/UI/OutletPropertiesMenu'
+import SwitchPropertiesMenu from './components/UI/SwitchPropertiesMenu'
 import { RoomContext } from './RoomContext'
 
 function App() {
@@ -14,6 +16,8 @@ function App() {
     const __pointer = useState(null)
     const __doors = useState([])
     const __pathNode = useState(null)
+    const __outletPropertiesMenu = useState({ open: false })
+    const __switchPropertiesMenu = useState({ open: false })
 
     const CTX = {
         __quickMenuPosition,
@@ -23,9 +27,10 @@ function App() {
         __selectedPathPoints,
         __pointer,
         __doors,
-        __pathNode
+        __pathNode,
+        __outletPropertiesMenu,
+        __switchPropertiesMenu
     }
-    
 
     return (
         <div
@@ -34,8 +39,10 @@ function App() {
             onContextMenu={e => e.preventDefault()}
         >
             <RoomContext.Provider value={CTX}>
-                <Plan/>
-                <QuickMenu/>
+                <Plan />
+                <QuickMenu />
+                <OutletPropertiesMenu />
+                <SwitchPropertiesMenu />
             </RoomContext.Provider>
         </div>
     );

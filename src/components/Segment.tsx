@@ -1,29 +1,19 @@
 import React, { useState, useContext } from "react";
 import { line } from "d3-shape";
 import { DraggableCore } from "react-draggable";
-import { Points } from './../interfaces'
 import { RoomContext } from './../RoomContext'
-import Point from "./Point";
 import { getAllPoints } from "../utils";
 
-export default function Segment({
-    pathPoints,
-    visible,
-    segmentIndex,
-}: {
-    pathPoints: any,
-    visible: boolean,
-    segmentIndex: number
-}) {
+export default function Segment({ pathPoints, visible, }) {
 
     const { __quickMenuPosition, __quickMenuState, __selectedPathPoints, __rooms, __pointer, __pathNode } = useContext(RoomContext)
 
-    const [quickMenuPosition, setQuickMenuPosition] = __quickMenuPosition
-    const [quickMenuState, setQuickMenuState] = __quickMenuState
-    const [selectedPathPoints, setSelectedPathPoints] = __selectedPathPoints
+    const setQuickMenuPosition = __quickMenuPosition[1]
+    const setQuickMenuState = __quickMenuState[1]
+    const setSelectedPathPoints = __selectedPathPoints[1]
     const [rooms, setRooms] = __rooms
-    const [pointer, setPointer] = __pointer
-    const [pathNode, setPathNode] = __pathNode
+    const setPointer = __pointer[1]
+    const setPathNode = __pathNode[1]
 
     const [isDragging, setIsDragging] = useState(false)
 
@@ -82,22 +72,24 @@ export default function Segment({
     }
 
     const segmentClicked = e => {
-        setPointer({x : e.clientX, y : e.clientY})
         e.preventDefault()
-
-        let x
-        let y
-
+        
+        let coords = { x : null, y : null}
+        
         if (e.type === 'mouseup') {
-            x = e.clientX
-            y = e.clientY
+            coords.x = e.clientX
+            coords.y = e.clientY
+            setPointer(coords)
         } else {
-            x = e.touches[0].pageX
-            y = e.touches[0].pageY
+            console.log(e)
+            console.log(e.originalEvent)
+            coords.x = e.changedTouches[0].clientX
+            coords.y = e.changedTouches[0].clientY
+            setPointer(coords)
         }
 
 
-        setQuickMenuPosition({ x, y })
+        setQuickMenuPosition(coords)
         setQuickMenuState(prev => !prev)
         setSelectedPathPoints(pathPoints)
         setPathNode(e.target)
@@ -113,10 +105,10 @@ export default function Segment({
             //onStart={() => setIsDragging(true)}
             onDrag={dragging}
             onStop={dragEnd}
-            cancel=".doorCenter"
+            cancel=".doorCenter, .outlet"
         >
             <path
-                style={ visible ?  { visibility : "visible" } : { visibility : 'hidden'}}
+                style={visible ? { visibility: "visible" } : { visibility: 'hidden' }}
                 d={path(data)}
                 id={a.room + '.' + a.i + '.' + b.i}
                 className="segment"
