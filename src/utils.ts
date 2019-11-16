@@ -32,15 +32,15 @@ export const getPointCoords = (clickCoords, pathPoints) => {   // y = m*x + p
 
     const m = (b.y - a.y) / (b.x - a.x)
     //console.log('m',m)
-    const p = a.y - m*a.x
+    const p = a.y - m * a.x
 
     if (m === 0) {
         y = a.y
-    } 
+    }
     else if (!isFinite(m)) {
         x = a.x
-    } else 
-        y = m*x + p
+    } else
+        y = m * x + p
 
     return { x, y }
 
@@ -48,7 +48,7 @@ export const getPointCoords = (clickCoords, pathPoints) => {   // y = m*x + p
 
 export function getY(point, pathPoints) {
 
-    const [a,b] = pathPoints
+    const [a, b] = pathPoints
     // y = m * x + p
     const dx = b.x - a.x
     const dy = b.y - a.y
@@ -68,23 +68,23 @@ export function getY(point, pathPoints) {
         x = point.x
         y = m * point.x + p
     }
-    return {x,y}
+    return { x, y }
 }
 
-export function closestPointToSegment(point, a, b ) {
+export function closestPointToSegment(point, a, b) {
     //console.log(point)
 }
 
-export function project( p, a, b ) {
-    
+export function project(p, a, b) {
+
     var atob = { x: b.x - a.x, y: b.y - a.y };
     var atop = { x: p.x - a.x, y: p.y - a.y };
     var len = atob.x * atob.x + atob.y * atob.y;
     var dot = atop.x * atob.x + atop.y * atob.y;
-    var t = Math.min( 1, Math.max( 0, dot / len ) );
+    var t = Math.min(1, Math.max(0, dot / len));
 
-    dot = ( b.x - a.x ) * ( p.y - a.y ) - ( b.y - a.y ) * ( p.x - a.x );
-    
+    dot = (b.x - a.x) * (p.y - a.y) - (b.y - a.y) * (p.x - a.x);
+
     return {
         point: {
             x: a.x + atob.x * t,
@@ -94,4 +94,17 @@ export function project( p, a, b ) {
         dot: dot,
         t: t
     };
+}
+
+export function getAllElementsOnCircuit(rooms, circuitName) {
+
+    return rooms.reduce((acc, curr, i) => {
+        acc.push(...curr.outlets, ...curr.switches, ...curr.lamps)
+        return acc
+    }, [])
+        .filter(el => {
+            if (el.props.circuit) { 
+            return el.props.circuit.name === circuitName
+            }
+         })
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Plan from "./components/Plan";
+import Plan from "./components/BUILDING/Plan";
 import "./App.css";
 import QuickMenu from './components/UI/QuickMenu'
 import OutletPropertiesMenu from './components/UI/OutletPropertiesMenu'
@@ -15,7 +15,7 @@ function App() {
     const __selectedPathPoints = useState(null)
     const __pointer = useState(null)
     const __doors = useState([])
-    const __pathNode = useState(null)
+    const __node = useState(null)
     const __outletPropertiesMenu = useState({ open: false })
     const __switchPropertiesMenu = useState({ open: false })
 
@@ -27,7 +27,7 @@ function App() {
         __selectedPathPoints,
         __pointer,
         __doors,
-        __pathNode,
+        __node,
         __outletPropertiesMenu,
         __switchPropertiesMenu
     }

@@ -12,7 +12,8 @@ const QuickMenu = () => {
         __rooms,
         __pointer,
         __outletPropertiesMenu,
-        __switchPropertiesMenu
+        __switchPropertiesMenu,
+        __node
     } = useContext(RoomContext)
 
     const [quickMenuPosition, setQuickMenuPosition] = __quickMenuPosition
@@ -22,6 +23,9 @@ const QuickMenu = () => {
     const [pointer] = __pointer
     const [outletPropertiesMenu, setOutletPropertiesMenu] = __outletPropertiesMenu
     const [switchPropertiesMenu, setSwitchPropertiesMenu] = __switchPropertiesMenu
+    const [node, setNode] = __node
+
+    if (!node) return null
 
     const handleClose = () => {
         setQuickMenuState(false)
@@ -29,7 +33,7 @@ const QuickMenu = () => {
     }
 
     const addCorner = e => {
-        e.persist()
+        //e.persist()
 
         const [a] = selectedPathPoints
         const roomIndex = rooms.findIndex(room => room.id === a.room)
@@ -132,11 +136,30 @@ const QuickMenu = () => {
             type : 'switch'
         }
 
-        const __switch = { anchorPoint, pointsIds, id, props }
+        const category = 'switches'
+
+        const __switch = { anchorPoint, pointsIds, id, props, category }
 
         room.switches.push(__switch)
         setSwitchPropertiesMenu(prev => { return { ...prev, open: true, __switch: __switch } })
         setRooms([...rooms])
+        handleClose()
+    }
+    
+    const addlamp = e => {
+        const room = rooms.find(({ id }) => id === node.id.split('.')[0])
+
+        const x = pointer.x - room.x
+        const y = pointer.y - room.y
+
+        const anchorPoint = { x, y}
+        const id = room.id + '.lamp.' + room.lamps.length
+
+        const lamp = {anchorPoint, id}
+        room.lamps.push(lamp)
+        console.log(rooms)
+        setRooms([...rooms])
+
         handleClose()
     }
 
@@ -153,10 +176,11 @@ const QuickMenu = () => {
             open={quickMenuState}
             onClose={handleClose}
         >
-            <MenuItem onClick={addCorner}>new corner</MenuItem>
-            <MenuItem onClick={addDoor}>new door</MenuItem>
-            <MenuItem onClick={addOutlet}>new outlet</MenuItem>
-            <MenuItem onClick={addSwitch}>new switch</MenuItem>
+            {node.nodeName === 'path' ? <MenuItem onClick={addCorner}>add corner</MenuItem> : null }
+            {node.nodeName === 'path' ? <MenuItem onClick={addDoor}>add door</MenuItem> : null }
+            <MenuItem onClick={addOutlet}>add outlet</MenuItem>
+            <MenuItem onClick={addSwitch}>add switch</MenuItem>
+            {node.nodeName === 'polygon' ? <MenuItem onClick={addlamp}>add lamp</MenuItem> : null}
         </Menu>
     )
 }
