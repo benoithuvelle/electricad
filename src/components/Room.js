@@ -15,17 +15,17 @@ function Room(props) {
 
     let [room, setRoom] = useState(props.room)
     useEffect(() => {
-        console.log('room changed')
+        //console.log('room changed')
         electricad[index] = room
         setElectricad([...electricad])
     }, [room])
 
     ///////////////////////////////////////////
-    /////////// //console.log  //////////////////
+    /////////// ////console.log  //////////////////
     ///////////////////////////////////////////
 
-    console.log('rendering room : ' + room.id)
-    //console.log(room.path())
+    //console.log('rendering room : ' + room.id)
+    ////console.log(room.path())
 
     ///////////////////////////////////////////
     /////////////// functions /////////////////
@@ -34,7 +34,7 @@ function Room(props) {
     const deleteRoom = e => {
         if (isSelected) {
             if (e.keyCode === 8) {
-                //console.log('you want to delete this ?')
+                ////console.log('you want to delete this ?')
                 setElectricad(electricad.filter(el => el.id !== room.id))
             }
         }
@@ -64,9 +64,9 @@ function Room(props) {
                 let a = pointA.x + room.x
                 let b = pointB.x + pointB.dx
                 let dx = Math.abs(a - b)
-                ////console.log(dx)
+                //////console.log(dx)
                 if (dx <= 30) {
-                    ////console.log('x match')
+                    //////console.log('x match')
                     pointA.x = b - room.x
                 }
             })
@@ -74,14 +74,14 @@ function Room(props) {
                 let a = pointA.y + room.y
                 let b = pointB.y + pointB.dy
                 let dy = Math.abs(a - b)
-                ////console.log(dx)
+                //////console.log(dx)
                 if (dy <= 30) {
-                    ////console.log('x match')
+                    //////console.log('x match')
                     pointA.y = b - room.y
                 }
             })
         })
-        //console.log(room.points)
+        ////console.log(room.points)
         setRoom({ ...room })
     }
 
@@ -146,12 +146,12 @@ function Room(props) {
                         :
                         null
                 }
-                {
+                {/* {
                     room.path().map(path => <Size
                         key={path.id}
                         path={path}
                     />)
-                }
+                } */}
 
                 
 

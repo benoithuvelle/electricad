@@ -17,8 +17,8 @@ function Point(props) {
         thisPoint.x = point.x + dnd.deltaX
         thisPoint.y = point.y + dnd.deltaY
 
-        //setRoom({...room})
-        setElectricad([...electricad])
+        setRoom({...room})
+        //setElectricad([...electricad])
     }
     const dragEnd = (e, dnd) => {
 
@@ -62,6 +62,7 @@ function Point(props) {
             onDrag={dragging}
             onStop={dragEnd}
         >
+            <g>
             <circle
                 className='corner'
                 id={point.id}
@@ -73,6 +74,18 @@ function Point(props) {
                 strokeWidth={4}
                 //opacity={0.6}
             />
+            <text
+                x={point.x}
+                y={point.y}
+                textAnchor="middle"
+                alignmentBaseline='central'
+                pointerEvents='none'
+                fill='grey'
+            >
+                {point.id.split('.')[2]}
+            </text>
+
+            </g>
         </DraggableCore >
     )
 }

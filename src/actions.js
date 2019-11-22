@@ -4,9 +4,9 @@ export function Room(id, x, y) {
     this.y = y;
     this.points = [
         { x: 0, y: 0, id: id +'.corner.' + 0 },
-        { x: 100, y: 0, id: id +'.corner.' + 1 },
-        { x: 100, y: 100, id: id +'.corner.' + 2 },
-        { x: 0, y: 100, id: id +'.corner.' + 3 },
+        { x: 300, y: 0, id: id +'.corner.' + 1 },
+        { x: 300, y: 300, id: id +'.corner.' + 2 },
+        { x: 0, y: 300, id: id +'.corner.' + 3 },
     ];
     this.polygon = function () { return this.points.map(point => [point.x, point.y].join(' ')) };
     this.color = '#'+(Math.random()*0xFFFFFF<<0).toString(16);

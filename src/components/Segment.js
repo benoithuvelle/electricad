@@ -10,7 +10,7 @@ export default function Segment(props) {
     let pointA = room.points.find(e => e.id === path[0].id)
     let pointB = room.points.find(e => e.id === path[1].id)
 
-    ////console.log(path.length)
+    //////console.log(path.length)
 
     let segment = line()
         .x(d => d.x)
@@ -56,39 +56,49 @@ export default function Segment(props) {
     }
 
     const addPoint = (e) => {
-        //e.persist()
-        //console.log(e.target.getBoundingClientRect())
-        //console.log(e.clientX)
+        e.persist()
+        ////console.log(e.target.getBoundingClientRect())
+        ////console.log(e.clientX)
+        //console.log(e.target)
 
         let box = e.target.getBoundingClientRect()
+        //console.log(box.left)
+        //console.log(e.clientX)
         let pointer = { x: e.clientX, y: e.clientY }
 
-        let point = { x: Math.abs(box.x - pointer.x) }
+        let point = {}
+
+        point.x = pointer.x - box.left + path[0].x < path[1].x ? path[0].x : path[1].x
+        point.x = path[0].x < path[1].x ? pointer.x - box.left + path[0].x : pointer.x - box.left + path[1].x
+        //console.log(point.x)
         // y = mx + b
 
         let a = path[0]
         let b = path[1]
 
+        console.log(a.id.split('.')[2],b.id.split('.')[2])
+
         let dx = a.x - b.x
         let dy = a.y - b.y
 
-        let m = dy / dx
+        let m =  dy / dx
         let p = a.x - m * a.y
 
-        //console.log(m)
+        ////console.log(m)
 
         if (m === 0) {
-            //console.log('ligne horizontale')
+            ////console.log('ligne horizontale')
             point.y = a.y
         }
 
         else if (m === Infinity || m === -Infinity) {
-            //console.log('ligne verticale')
-            point.y = Math.abs(box.y - pointer.y)
+            ////console.log('ligne verticale')
+            point.x = a.x
+            point.y = a.y < b.y ? Math.abs(pointer.y - box.top + a.y) : Math.abs(pointer.y - box.top + b.y) 
         }
 
         else {
-            point.y = m * point.x + p
+            point.y = m * point.x + p + a.y
         }
 
         point.id = room.id +'.corner.' + room.points.length +1
@@ -96,7 +106,7 @@ export default function Segment(props) {
         //room.points.push(point)
         let index1 = room.points.findIndex(point => point.id === a.id) 
         let index2 = room.points.findIndex(point => point.id === b.id) 
-        console.log(index1, index2)
+        //console.log(index1, index2)
         
         room.points.splice(index1 + 1 , 0, point)
 
